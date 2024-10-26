@@ -6,7 +6,9 @@ import service.exerciseservice.base.BaseResponse;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.SurveyResultDto;
+import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.service.ExerciseCommonService;
+import service.exerciseservice.service.ExerciseQueryService;
 import service.exerciseservice.service.OpenAiService;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class ExerciseController {
 
 
     private final ExerciseCommonService exerciseCommonService;
+    private final ExerciseQueryService exerciseQueryService;
     private final OpenAiService openAiService;
 
     //Todo: 운동루틴 추가
@@ -37,5 +40,13 @@ public class ExerciseController {
 
         openAiService.generateHobbyRecommendations(surveyResultDto);
         return BaseResponse.onSuccess(openAiService.generateHobbyRecommendations(surveyResultDto));
+    }
+
+    //Todo: 운동 리스트 조회
+    @GetMapping("/routine-list/{userId}")
+    private BaseResponse<List<RequestExerciseDto.ExerciseRoutineDto>> getRoutineList(
+            @PathVariable Long userId){
+
+        return BaseResponse.onSuccess(exerciseQueryService.getExerciseRoutineList(userId));
     }
 }

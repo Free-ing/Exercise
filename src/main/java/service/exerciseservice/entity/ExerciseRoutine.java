@@ -32,11 +32,12 @@ public class ExerciseRoutine extends BaseEntity {
     private Boolean saturday;
     private Boolean sunday;
 
-    private Integer duration;
+    private Long duration;
     private String explanation;
 
     private Boolean status;
 
+    private String imageUrl;
     @Enumerated(EnumType.STRING)
     private BasicService basicService;
 
@@ -47,8 +48,8 @@ public class ExerciseRoutine extends BaseEntity {
     public ExerciseRoutine(String exerciseName, Long userId, LocalTime startTime,
                            LocalTime endTime, Boolean monday, Boolean tuesday,
                            Boolean wednesday, Boolean thursday, Boolean friday,
-                           Boolean saturday, Boolean sunday, Integer duration,
-                           String explanation, Boolean status, BasicService basicService) {
+                           Boolean saturday, Boolean sunday, Long duration,
+                           String explanation, Boolean status, BasicService basicService, String imageUrl) {
         this.exerciseName = exerciseName;
         this.userId = userId;
         this.startTime = startTime;
@@ -64,5 +65,6 @@ public class ExerciseRoutine extends BaseEntity {
         this.explanation = explanation;
         this.status = status;
         this.basicService = basicService;
+        this.imageUrl = imageUrl;
     }
 }

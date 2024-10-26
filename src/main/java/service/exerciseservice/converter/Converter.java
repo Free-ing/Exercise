@@ -6,9 +6,9 @@ import service.exerciseservice.entity.ExerciseRoutine;
 
 public class Converter {
     @Builder
-    public static ExerciseRoutine toRoutineEntity(RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto){
+    public static ExerciseRoutine toRoutineEntity(RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto, Long duration, Long userId){
                 return ExerciseRoutine.builder()
-                .userId(exerciseRoutineDto.getUserId())
+                .userId(userId)
                 .exerciseName(exerciseRoutineDto.getRoutineName())
                 .startTime(exerciseRoutineDto.getStartTime())
                 .endTime(exerciseRoutineDto.getEndTime())
@@ -20,8 +20,9 @@ public class Converter {
                 .saturday(exerciseRoutineDto.getSaturday())
                 .sunday(exerciseRoutineDto.getSunday())
                 .explanation(exerciseRoutineDto.getExplanation())
-                .status(exerciseRoutineDto.getStatus())
+                .status(false)
                 .basicService(exerciseRoutineDto.getBasicService())
+                        .duration(duration)
                 .build();
     }
 }

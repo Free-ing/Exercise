@@ -15,7 +15,9 @@ public class RequestExerciseDto {
     @AllArgsConstructor
     public static class ExerciseRoutineDto{
         private String routineName;
+        private Long routineId;
         private Long userId;
+        private Long duration;
         private String imageUrl;
         private Boolean monday;
         private Boolean tuesday;
@@ -29,5 +31,6 @@ public class RequestExerciseDto {
         private String explanation;
         private Boolean status;
         private BasicService basicService;
+
     }
 }
