@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import service.spirit.base.exception.code.SuccessStatus;
+import service.exerciseservice.base.exception.code.SuccessStatus;
 
 import java.time.LocalDateTime;
 

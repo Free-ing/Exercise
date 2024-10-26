@@ -16,6 +16,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     //Todo: 운동 루틴 추가하기
     @Override
     public Long addExerciseRoutine(Long userId, RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto){
+        System.out.println(exerciseRoutineDto.getRoutineName());
         return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto)).getId();
     }
 
