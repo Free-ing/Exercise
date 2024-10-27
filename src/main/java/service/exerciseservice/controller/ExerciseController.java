@@ -90,4 +90,13 @@ public class ExerciseController {
         exerciseCommonService.cancelRoutine(routineId);
         return BaseResponse.onSuccess("일정 수행완료를 취소하였습니다.");
     }
+
+    //Todo: 운동 루틴 삭제
+    @DeleteMapping("/{routineId}")
+    public BaseResponse<String> deleteRoutine(
+            @PathVariable Long routineId
+    ){
+        exerciseCommonService.deleteRoutine(routineId);
+        return BaseResponse.onSuccess("성공적으로 루틴을 삭제했습니다.");
+    }
 }

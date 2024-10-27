@@ -19,4 +19,7 @@ public interface ExerciseCommonService {
 
     //Todo: 운동 일정 수행 완료 취소
     void cancelRoutine(Long routineRecordId);
+
+    //Todo: 운동 루틴 삭제
+    void deleteRoutine(Long routineId);
 }

@@ -39,7 +39,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
     }
 
-    //Todo : 마음 채우기 루틴 on
+    //Todo : 운동 루틴 on
     @Override
     public void onMentalRoutine(Long routineId, LocalDate today){
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
@@ -55,7 +55,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         exerciseRoutineRepository.save(exerciseRoutine);
     }
 
-    //Todo : 마음 채우기 루틴 off
+    //Todo : 운동 루틴 off
     @Override
     public void offMentalRoutine(Long routineId, LocalDate today) {
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
@@ -70,7 +70,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         exerciseRoutineRepository.save(exerciseRoutine);
     }
 
-    //Todo: 마음 채우기 일정 수행 완료
+    //Todo: 운동 일정 수행 완료
     @Override
     public void completeRoutine(Long routineRecordId){
         ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
@@ -81,7 +81,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     }
 
-    //Todo: 마음 채우기 일정 수행 완료 취소
+    //Todo: 운동 일정 수행 완료 취소
     @Override
     public void cancelRoutine(Long routineRecordId){
         ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
@@ -89,6 +89,16 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         exerciseRoutineRecord.updateCompleteAndCompleteDate(false, null);
 
     }
+
+    //Todo: 운동 루틴 삭제
+    @Override
+    public void deleteRoutine(Long routineId){
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
+                .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
+
+        exerciseRoutineRepository.delete(exerciseRoutine);
+    }
+
 
 
 
