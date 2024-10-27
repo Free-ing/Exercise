@@ -11,6 +11,7 @@ import service.exerciseservice.service.ExerciseCommonService;
 import service.exerciseservice.service.ExerciseQueryService;
 import service.exerciseservice.service.OpenAiService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -48,5 +49,45 @@ public class ExerciseController {
             @PathVariable Long userId){
 
         return BaseResponse.onSuccess(exerciseQueryService.getExerciseRoutineList(userId));
+    }
+
+    //Todo: 운동 루틴 켜기
+    @PatchMapping("/{routineId}/on")
+    public BaseResponse<String> onMentalRoutine(
+            @RequestParam LocalDate date,
+            @PathVariable Long routineId
+    ){
+        exerciseCommonService.onMentalRoutine(routineId,date);
+        return BaseResponse.onSuccess("성공적으로 루틴 일정을 켰습니다.");
+    }
+    //Todo: 운동 루틴 끄기
+    @PatchMapping("/{routineId}/off")
+    public BaseResponse<String> offMentalRoutine(
+            @RequestParam LocalDate date,
+            @PathVariable Long routineId
+    ){
+
+
+        exerciseCommonService.offMentalRoutine(routineId,date);
+        return BaseResponse.onSuccess("성공적으로 루틴 일정을 껐습니다.");
+    }
+
+    //Todo: 운동 수행 완료
+    @PatchMapping("/{routineId}/complete")
+    public BaseResponse<String> completeExerciseRoutineRecord(
+            @PathVariable Long routineId
+    ){
+        exerciseCommonService.completeRoutine(routineId);
+        return BaseResponse.onSuccess("성공적으로 일정을 수행하였습니다.");
+    }
+
+
+    //Todo: 운동 수행 취소
+    @PatchMapping("/{routineId}/cancel")
+    public BaseResponse<String> cancelExerciseRoutineRecord(
+            @PathVariable Long routineId
+    ){
+        exerciseCommonService.cancelRoutine(routineId);
+        return BaseResponse.onSuccess("일정 수행완료를 취소하였습니다.");
     }
 }

@@ -20,16 +20,31 @@ public class ExerciseRoutineRecord extends BaseEntity {
     private LocalDate completeDay;
     private String exerciseName;
 
+    private LocalDate routineDate;
+    private boolean complete;
+    private boolean status;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_routine_id")
     private ExerciseRoutine exerciseRoutine;
 
     @Builder
-    public ExerciseRoutineRecord(Long userId, LocalDate completeDay,
-                                 String exerciseName, ExerciseRoutine exerciseRoutine) {
+    public ExerciseRoutineRecord(LocalDate routineDate,boolean complete, Long userId, LocalDate completeDay,
+                                 String exerciseName, ExerciseRoutine exerciseRoutine, boolean status) {
+        this.routineDate = routineDate;
         this.userId = userId;
         this.completeDay = completeDay;
         this.exerciseName = exerciseName;
         this.exerciseRoutine = exerciseRoutine;
+        this.complete = complete;
+        this.status = status;
+    }
+
+    public void updateCompleteAndCompleteDate(Boolean complete, LocalDate date){
+        this.complete = complete;
+        this.completeDay = date;
+    }
+
+    public void updateStatus(boolean status){
+        this.status = status;
     }
 }
