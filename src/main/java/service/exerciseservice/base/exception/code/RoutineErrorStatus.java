@@ -9,7 +9,8 @@ public enum RoutineErrorStatus implements BaseErrorCodeInterface {
     ROUTINE_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXERCISE_4002", "존재하지 않는 루틴입니다."),
     ROUTINE_RECORD_NOT_FOUND(HttpStatus.BAD_REQUEST, "EXERCISE_4003", "존재하지 않는 일정입니다."),
 
-    USER_CANT_DELETE(HttpStatus.BAD_REQUEST, "USER_4001", "삭제할 대상이 없거나 삭제할 권한이 없습니다.");
+    USER_CANT_DELETE(HttpStatus.BAD_REQUEST, "USER_4001", "삭제할 대상이 없거나 삭제할 권한이 없습니다."),
+    USER_CANT_UPDATE(HttpStatus.BAD_REQUEST, "USER_4002", "대상이 없거나 업데이트할 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

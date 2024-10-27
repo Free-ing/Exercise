@@ -99,6 +99,16 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         exerciseRoutineRepository.delete(exerciseRoutine);
     }
 
+    //Todo: 운동 루틴 수정
+    @Override
+    public Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto){
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
+                .orElseThrow(() -> new RestApiException(RoutineErrorStatus.USER_CANT_UPDATE));
+
+        exerciseRoutine.update(routineUpdateDto);
+
+        return exerciseRoutine.getId();
+    }
 
 
 

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import service.exerciseservice.base.BaseEntity;
+import service.exerciseservice.dto.RequestExerciseDto;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -66,5 +67,20 @@ public class ExerciseRoutine extends BaseEntity {
         this.status = status;
         this.basicService = basicService;
         this.imageUrl = imageUrl;
+    }
+
+    public void update(RequestExerciseDto.RoutineUpdateDto routineUpdateDto) {
+        this.exerciseName = routineUpdateDto.getRoutineName();
+        this.explanation = routineUpdateDto.getExplanation();
+        this.sunday = routineUpdateDto.getSunday();
+        this.saturday = routineUpdateDto.getSaturday();
+        this.thursday = routineUpdateDto.getThursday();
+        this.friday = routineUpdateDto.getFriday();
+        this.wednesday = routineUpdateDto.getWednesday();
+        this.tuesday = routineUpdateDto.getTuesday();
+        this.monday = routineUpdateDto.getMonday();
+        this.endTime = routineUpdateDto.getEndTime();
+        this.startTime = routineUpdateDto.getStartTime();
+        this.imageUrl = routineUpdateDto.getImageUrl();
     }
 }

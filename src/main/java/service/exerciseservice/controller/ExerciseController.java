@@ -99,4 +99,17 @@ public class ExerciseController {
         exerciseCommonService.deleteRoutine(routineId);
         return BaseResponse.onSuccess("성공적으로 루틴을 삭제했습니다.");
     }
+
+    //Todo: 운동 루틴 수정
+    @PutMapping("/{routineId}/{userId}")
+    public BaseResponse<Long> updateRoutine(
+            @RequestBody RequestExerciseDto.RoutineUpdateDto routineUpdateDto,
+            @PathVariable Long routineId,
+            @PathVariable Long userId
+    ){
+        Long updateRoutineId = exerciseCommonService.updateRoutine(userId, routineId, routineUpdateDto);
+        return BaseResponse.onSuccess(updateRoutineId);
+    }
+
+
 }

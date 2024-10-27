@@ -12,4 +12,6 @@ import java.util.Optional;
 @Repository
 public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine, Long> {
     List<ExerciseRoutine> findByUserId(Long userId);
+
+    Optional<ExerciseRoutine> findByIdAndUserId(Long routineId, Long userId);
 }

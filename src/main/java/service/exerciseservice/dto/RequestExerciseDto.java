@@ -33,4 +33,22 @@ public class RequestExerciseDto {
         private BasicService basicService;
 
     }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class RoutineUpdateDto{
+        private String RoutineName;
+        private String explanation;
+        private Boolean sunday;
+        private Boolean saturday;
+        private Boolean thursday;
+        private Boolean friday;
+        private Boolean wednesday;
+        private Boolean tuesday;
+        private Boolean monday;
+        private LocalTime endTime;
+        private LocalTime startTime;
+        private String imageUrl;
+    }
 }
