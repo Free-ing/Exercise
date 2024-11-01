@@ -9,13 +9,16 @@ import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.entity.BasicService;
 import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.entity.ExerciseRoutineRecord;
+import service.exerciseservice.entity.ExerciseWeekRecord;
 import service.exerciseservice.repository.ExerciseRoutineRecordRepository;
 import service.exerciseservice.repository.ExerciseRoutineRepository;
+import service.exerciseservice.repository.ExerciseWeekRecordRepository;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 
 import static service.exerciseservice.converter.Converter.toRoutineEntity;
@@ -27,6 +30,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     private final ExerciseRoutineRepository exerciseRoutineRepository;
     private final ExerciseRoutineRecordRepository exerciseRoutineRecordRepository;
+    private final ExerciseWeekRecordRepository exerciseWeekRecordRepository;
 
     //Todo: 운동 루틴 추가하기
     @Override
@@ -111,13 +115,6 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         return exerciseRoutine.getId();
     }
 
-//
-//    //Todo: 회원의 운동 데이터 모두 삭제
-//    public void deleteExerciseData(Long userId){
-//        e
-//    }
-//
-
 
     //Todo: 기본 기능 생성
     @Override
@@ -168,6 +165,17 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     }
 
 
+    //Todo: 회원의 모든 운동 데이터 삭제
+    @Override
+    public void deleteExerciseDate(Long userId){
+        List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findExerciseRoutineLIstByUserId(userId);
+        List<ExerciseRoutineRecord> exerciseRoutineRecordList = exerciseRoutineRecordRepository.findExerciseRoutineRecordLIstByUserId(userId);
+        List<ExerciseWeekRecord> exerciseWeekRecordList = exerciseWeekRecordRepository.findExerciseWeekRecordLIstByUserId(userId);
+
+        exerciseRoutineRepository.deleteAll(exerciseRoutineList);
+        exerciseRoutineRecordRepository.deleteAll(exerciseRoutineRecordList);
+        exerciseWeekRecordRepository.deleteAll(exerciseWeekRecordList);
+    }
 
 
     // 운동 시간 계산 (분 단위)

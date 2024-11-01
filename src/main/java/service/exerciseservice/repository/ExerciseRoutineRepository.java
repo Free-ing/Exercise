@@ -1,6 +1,7 @@
 package service.exerciseservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.entity.ExerciseRoutineRecord;
@@ -14,4 +15,8 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
     List<ExerciseRoutine> findByUserId(Long userId);
 
     Optional<ExerciseRoutine> findByIdAndUserId(Long routineId, Long userId);
+
+    @Query("select er from ExerciseRoutine er where er.userId =:userId")
+    List<ExerciseRoutine> findExerciseRoutineLIstByUserId(Long userId);
+
 }

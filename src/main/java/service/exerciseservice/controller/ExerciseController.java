@@ -111,13 +111,14 @@ public class ExerciseController {
         return BaseResponse.onSuccess(updateRoutineId);
     }
 
-//    //Todo: 회원의 운동 데이터 모두 삭제
-//    @DeleteMapping("/home/{userId}")
-//    public BaseResponse<String> deleteExerciseData(
-//            @PathVariable Long userId
-//    ){
-//
-//    }
+    //Todo: 회원의 운동 데이터 모두 삭제
+    @DeleteMapping("/users/{userId}")
+    public BaseResponse<String> deleteExerciseData(
+            @PathVariable Long userId
+    ){
+        exerciseCommonService.deleteExerciseDate(userId);
+        return BaseResponse.onSuccess("성공적으로 회원의 모든 데이터가 삭제됐습니다.");
+    }
 
 
     //Todo: 운동 기본 기능 구현

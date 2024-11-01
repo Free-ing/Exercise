@@ -23,4 +23,6 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
             "from ExerciseRoutineRecord er where er.routineDate =:date and er.status =:status and er.userId =:userId")
     List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId , Boolean status);
 
+    @Query("select err from ExerciseRoutineRecord err where err.userId =:userId")
+    List<ExerciseRoutineRecord> findExerciseRoutineRecordLIstByUserId(Long userId);
 }

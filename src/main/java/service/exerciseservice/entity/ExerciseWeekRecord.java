@@ -13,7 +13,8 @@ public class ExerciseWeekRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long exerciseWeekRecordId;
-    
+
+    private Long userId;
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer totalTime;
