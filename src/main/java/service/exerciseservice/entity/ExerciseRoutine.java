@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "exercise_routine")
 public class ExerciseRoutine extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +35,14 @@ public class ExerciseRoutine extends BaseEntity {
     private Boolean sunday;
 
     private Long duration;
+
+    @Column(columnDefinition = "TEXT")
     private String explanation;
 
     private Boolean status;
 
     private String imageUrl;
+
     @Enumerated(EnumType.STRING)
     private BasicService basicService;
 

@@ -11,10 +11,11 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "exercise_routine_record")
 public class ExerciseRoutineRecord extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long exerciseRecordId;
+    private Long id;
 
     private Long userId;
     private LocalDate completeDay;

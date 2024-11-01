@@ -4,13 +4,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import service.exerciseservice.base.BaseEntity;
 
 import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ExerciseWeekRecord extends BaseEntity {
+public class ExerciseWeekRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long exerciseWeekRecordId;

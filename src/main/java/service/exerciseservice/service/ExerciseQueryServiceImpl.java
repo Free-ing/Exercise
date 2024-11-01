@@ -3,8 +3,11 @@ package service.exerciseservice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import service.exerciseservice.dto.RequestExerciseDto;
+import service.exerciseservice.dto.ResponseExerciseDto;
+import service.exerciseservice.repository.ExerciseRoutineRecordRepository;
 import service.exerciseservice.repository.ExerciseRoutineRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 public class ExerciseQueryServiceImpl implements ExerciseQueryService{
 
     private final ExerciseRoutineRepository exerciseRoutineRepository;
+    private final ExerciseRoutineRecordRepository exerciseRoutineRecordRepository;
 
     //Todo: 마음 채우기 루틴 리스트 조회
     @Override
@@ -36,6 +40,16 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService{
                         .explanation(exerciseRoutine.getExplanation())
                         .build())
                 .collect(Collectors.toList());
+
+    }
+
+    //Todo: 일별 루틴 일정 조회
+    @Override
+    public  List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId){
+
+        List<ResponseExerciseDto.DayRoutineDto> dayRoutineDtoList = exerciseRoutineRecordRepository.getDayRoutine(date,userId, true);
+        System.out.println(dayRoutineDtoList);
+        return dayRoutineDtoList;
 
     }
 }

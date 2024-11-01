@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import service.exerciseservice.entity.BasicService;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -44,5 +45,31 @@ public class ResponseExerciseDto {
         private LocalTime startTime;
         private LocalTime endTime;
         private String explanation;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class DayRoutineDto{
+        private String Name;
+        private String imageUrl;
+        private Long routineId;
+        private Boolean monthday;
+        private Boolean tuesday;
+        private Boolean wednesday;
+        private Boolean thursday;
+        private Boolean friday;
+        private Boolean saturday;
+        private Boolean sunday;
+        private Boolean status;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private String explanation;
+        private BasicService basicService;
+
+        private Long recordId;
+        private Boolean complete;
+
     }
 }

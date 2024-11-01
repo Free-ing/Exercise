@@ -23,7 +23,6 @@ public class ExerciseController {
     private final ExerciseCommonService exerciseCommonService;
     private final ExerciseQueryService exerciseQueryService;
     private final OpenAiService openAiService;
-
     //Todo: 운동루틴 추가
     @PostMapping("/routine/{userId}")
     public BaseResponse<Long> addExerciseRoutine(
@@ -44,9 +43,10 @@ public class ExerciseController {
     }
 
     //Todo: 운동 리스트 조회
-    @GetMapping("/routine-list/{userId}")
+    @GetMapping("/routine-list")
     private BaseResponse<List<RequestExerciseDto.ExerciseRoutineDto>> getRoutineList(
-            @PathVariable Long userId){
+            @PathVariable Long userId
+    ){
 
         return BaseResponse.onSuccess(exerciseQueryService.getExerciseRoutineList(userId));
     }
@@ -111,5 +111,20 @@ public class ExerciseController {
         return BaseResponse.onSuccess(updateRoutineId);
     }
 
+//    //Todo: 회원의 운동 데이터 모두 삭제
+//    @DeleteMapping("/home/{userId}")
+//    public BaseResponse<String> deleteExerciseData(
+//            @PathVariable Long userId
+//    ){
+//
+//    }
 
+
+    //Todo: 운동 기본 기능 구현
+    @PostMapping("/default-routine/{userId}")
+    public void createDefaultService(
+            @PathVariable long userId
+    ){
+        exerciseCommonService.createDefaultService(userId);
+    }
 }
