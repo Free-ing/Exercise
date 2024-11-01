@@ -2,6 +2,7 @@ package service.exerciseservice.service;
 
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
+import service.exerciseservice.dto.RoutineTrackerDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,4 +13,7 @@ public interface ExerciseQueryService {
 
     //Todo: 일별 루틴 일정 조회
     List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId);
+
+    //Todo: 마음 루틴 트래커 조회
+    List<RoutineTrackerDto.ExerciseRoutineTrackerDto> getHobbyRoutineTrackers(Long userId, int year, int month);
 }

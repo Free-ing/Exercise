@@ -2,6 +2,7 @@ package service.exerciseservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.entity.ExerciseRoutineRecord;
@@ -19,4 +20,13 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
     @Query("select er from ExerciseRoutine er where er.userId =:userId")
     List<ExerciseRoutine> findExerciseRoutineLIstByUserId(Long userId);
 
+    @Query("SELECT e FROM ExerciseRoutine e " +
+            "LEFT JOIN FETCH e.exerciseRoutineRecordList er " +
+            "WHERE er.userId = :userId " +
+            "AND (er IS NULL OR (YEAR(er.routineDate) = :year AND MONTH(er.routineDate) = :month))")
+    List<ExerciseRoutine> findAllWithRecordsByUserId(
+            @Param("userId") Long userId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
 }

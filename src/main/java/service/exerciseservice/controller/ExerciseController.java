@@ -1,15 +1,17 @@
 package service.exerciseservice.controller;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import service.exerciseservice.base.BaseResponse;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
+import service.exerciseservice.dto.RoutineTrackerDto;
 import service.exerciseservice.dto.SurveyResultDto;
-import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.service.ExerciseCommonService;
 import service.exerciseservice.service.ExerciseQueryService;
 import service.exerciseservice.service.OpenAiService;
+import service.exerciseservice.service.TokenProviderService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +25,7 @@ public class ExerciseController {
     private final ExerciseCommonService exerciseCommonService;
     private final ExerciseQueryService exerciseQueryService;
     private final OpenAiService openAiService;
+    private final TokenProviderService tokenProviderService;
     //Todo: 운동루틴 추가
     @PostMapping("/routine/{userId}")
     public BaseResponse<Long> addExerciseRoutine(
@@ -127,5 +130,18 @@ public class ExerciseController {
             @PathVariable long userId
     ){
         exerciseCommonService.createDefaultService(userId);
+    }
+
+    //Todo: 마음 루틴 트래커 조회
+    @GetMapping("/tracker")
+    public BaseResponse<List<RoutineTrackerDto.ExerciseRoutineTrackerDto>> getExerciseRoutineTracker(
+            @RequestParam int year,
+            @RequestParam int month,
+//            @PathVariable Long userId
+            @RequestHeader("Authorization") String authorizationHeader
+    ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        return BaseResponse.onSuccess(exerciseQueryService.getHobbyRoutineTrackers(userId,year,month));
+
     }
 }
