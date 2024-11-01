@@ -23,7 +23,7 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
     @Query("SELECT e FROM ExerciseRoutine e " +
             "LEFT JOIN FETCH e.exerciseRoutineRecordList er " +
             "WHERE er.userId = :userId " +
-            "AND (er IS NULL OR (YEAR(er.routineDate) = :year AND MONTH(er.routineDate) = :month))")
+            "AND (er IS NULL OR (YEAR(er.routineDate) = :year AND MONTH(er.routineDate) = :month)) AND er.complete = true")
     List<ExerciseRoutine> findAllWithRecordsByUserId(
             @Param("userId") Long userId,
             @Param("year") int year,

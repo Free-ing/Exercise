@@ -127,7 +127,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                          \n2. 목 옆 스트레칭 (승모근)
                         편안하게 앉은 자세에서 오른손으로 머리를 잡고 오른쪽 귀가 오른쪽 어깨를 향하도록 천천히 당깁니다. 반대쪽 어깨가 올라가지 않도록 주의하며 15초간 유지해주세요.\s
                         """,
-                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/emotional_diary.png", BasicService.STATIC_STRETCHING);
+                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/static_stretching.png", BasicService.STATIC_STRETCHING);
 
         ExerciseRoutine dynamicRoutine = createMentalRoutine(userId, "동적 스트레칭", """
                         동적 스트레칭은 관절을 부드럽게 움직이며 근육을 능동적으로 늘리는 방법입니다. 운동 전 워밍업으로 적합하며, 근육의 체온을 높이고 혈액순환을 촉진시켜 운동 수행능력을 향상시킵니다. 특히 관절의 가동범위를 늘리고 부상 예방에도 효과적이에요!
@@ -137,7 +137,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                          \n2. 목 옆 스트레칭 (승모근)
                         한 손으로 벽을 짚고 서서 한쪽 다리를 앞뒤로 자연스럽게 흔들어줍니다. 점점 높이를 높여가며 각 방향으로 10회씩 실시하고 반대쪽도 같은 방법으로 진행합니다.\s
                         """,
-                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/emotional_diary.png", BasicService.DYNAMIC_STRETCHING);
+                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/dynamic_stretching.png", BasicService.DYNAMIC_STRETCHING);
 
         ExerciseRoutine workRoutine = createMentalRoutine(userId, "걷기", """
                         걷기는 모든 연령대가 쉽게 할 수 있는 기초적인 유산소 운동입니다. 심장 건강 증진, 체중 관리, 스트레스 해소에 효과적이며 관절에 무리가 적어 안전합니다. 하루 30분 이상, 약간 숨이 찰 정도의 속도로 걷는 것이 좋아요!
@@ -147,7 +147,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                          \n2. 파워 워킹
                         일반 걷기보다 빠른 속도로 팔을 크게 흔들며 걷습니다. 복근에 힘을 주고 보폭을 넓게 하여 운동 강도를 높일 수 있어요.\s 
                         """,
-                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/emotional_diary.png", BasicService.DYNAMIC_STRETCHING);
+                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/walking.png", BasicService.DYNAMIC_STRETCHING);
 
 
         ExerciseRoutine runRoutine = createMentalRoutine(userId, "달리기", """
@@ -158,10 +158,13 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                          \n2. 인터벌 러닝
                         빠른 달리기와 걷기 또는 천천히 달리기를 번갈아 하는 방법입니다. 예를 들어 2분 달리기 후 1분 걷기를 반복하는 식으로 진행하면 짧은 시간에 더 많은 칼로리를 소모하고, 기초대사량 증가와 심폐지구력 향상시킬 수 있어요.\s
                         """,
-                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/emotional_diary.png", BasicService.DYNAMIC_STRETCHING);
+                LocalTime.of(22, 0, 0), LocalTime.of(20, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/running.png", BasicService.DYNAMIC_STRETCHING);
 
         exerciseRoutineRepository.save(staticRoutine);
         exerciseRoutineRepository.save(dynamicRoutine);
+        exerciseRoutineRepository.save(workRoutine);
+        exerciseRoutineRepository.save(runRoutine);
+
     }
 
 

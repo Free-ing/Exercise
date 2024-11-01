@@ -27,11 +27,12 @@ public class ExerciseController {
     private final OpenAiService openAiService;
     private final TokenProviderService tokenProviderService;
     //Todo: 운동루틴 추가
-    @PostMapping("/routine/{userId}")
+    @PostMapping("/routine")
     public BaseResponse<Long> addExerciseRoutine(
             @RequestBody RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String authorizationHeader
     ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return BaseResponse.onSuccess(exerciseCommonService.addExerciseRoutine(userId,exerciseRoutineDto));
     }
 
@@ -48,9 +49,11 @@ public class ExerciseController {
     //Todo: 운동 리스트 조회
     @GetMapping("/routine-list")
     private BaseResponse<List<RequestExerciseDto.ExerciseRoutineDto>> getRoutineList(
-            @PathVariable Long userId
-    ){
+//            @PathVariable Long userId
 
+            @RequestHeader("Authorization") String authorizationHeader){
+
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return BaseResponse.onSuccess(exerciseQueryService.getExerciseRoutineList(userId));
     }
 
@@ -58,7 +61,9 @@ public class ExerciseController {
     @PatchMapping("/{routineId}/on")
     public BaseResponse<String> onMentalRoutine(
             @RequestParam LocalDate date,
-            @PathVariable Long routineId
+            @PathVariable Long routineId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
         exerciseCommonService.onMentalRoutine(routineId,date);
         return BaseResponse.onSuccess("성공적으로 루틴 일정을 켰습니다.");
@@ -67,7 +72,9 @@ public class ExerciseController {
     @PatchMapping("/{routineId}/off")
     public BaseResponse<String> offMentalRoutine(
             @RequestParam LocalDate date,
-            @PathVariable Long routineId
+            @PathVariable Long routineId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
 
 
@@ -78,7 +85,9 @@ public class ExerciseController {
     //Todo: 운동 수행 완료
     @PatchMapping("/{routineId}/complete")
     public BaseResponse<String> completeExerciseRoutineRecord(
-            @PathVariable Long routineId
+            @PathVariable Long routineId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
         exerciseCommonService.completeRoutine(routineId);
         return BaseResponse.onSuccess("성공적으로 일정을 수행하였습니다.");
@@ -88,7 +97,9 @@ public class ExerciseController {
     //Todo: 운동 수행 취소
     @PatchMapping("/{routineId}/cancel")
     public BaseResponse<String> cancelExerciseRoutineRecord(
-            @PathVariable Long routineId
+            @PathVariable Long routineId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
         exerciseCommonService.cancelRoutine(routineId);
         return BaseResponse.onSuccess("일정 수행완료를 취소하였습니다.");
@@ -97,7 +108,9 @@ public class ExerciseController {
     //Todo: 운동 루틴 삭제
     @DeleteMapping("/{routineId}")
     public BaseResponse<String> deleteRoutine(
-            @PathVariable Long routineId
+            @PathVariable Long routineId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
         exerciseCommonService.deleteRoutine(routineId);
         return BaseResponse.onSuccess("성공적으로 루틴을 삭제했습니다.");
@@ -108,8 +121,11 @@ public class ExerciseController {
     public BaseResponse<Long> updateRoutine(
             @RequestBody RequestExerciseDto.RoutineUpdateDto routineUpdateDto,
             @PathVariable Long routineId,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
+
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         Long updateRoutineId = exerciseCommonService.updateRoutine(userId, routineId, routineUpdateDto);
         return BaseResponse.onSuccess(updateRoutineId);
     }
@@ -117,8 +133,12 @@ public class ExerciseController {
     //Todo: 회원의 운동 데이터 모두 삭제
     @DeleteMapping("/users/{userId}")
     public BaseResponse<String> deleteExerciseData(
-            @PathVariable Long userId
+//            @PathVariable Long userId,
+            @RequestHeader("Authorization") String authorizationHeader
+
     ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
         exerciseCommonService.deleteExerciseDate(userId);
         return BaseResponse.onSuccess("성공적으로 회원의 모든 데이터가 삭제됐습니다.");
     }
@@ -137,7 +157,6 @@ public class ExerciseController {
     public BaseResponse<List<RoutineTrackerDto.ExerciseRoutineTrackerDto>> getExerciseRoutineTracker(
             @RequestParam int year,
             @RequestParam int month,
-//            @PathVariable Long userId
             @RequestHeader("Authorization") String authorizationHeader
     ){
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
