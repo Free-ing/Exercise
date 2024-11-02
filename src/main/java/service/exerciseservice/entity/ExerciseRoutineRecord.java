@@ -21,6 +21,8 @@ public class ExerciseRoutineRecord extends BaseEntity {
     private LocalDate completeDay;
     private String exerciseName;
 
+    private long exerciseDurationTime;
+
     private LocalDate routineDate;
     private boolean complete;
     private boolean status;
@@ -40,9 +42,10 @@ public class ExerciseRoutineRecord extends BaseEntity {
         this.status = status;
     }
 
-    public void updateCompleteAndCompleteDate(Boolean complete, LocalDate date){
+    public void updateCompleteAndCompleteDate(Boolean complete, LocalDate date, long duration){
         this.complete = complete;
         this.completeDay = date;
+        this.exerciseDurationTime = duration;
     }
 
     public void updateStatus(boolean status){

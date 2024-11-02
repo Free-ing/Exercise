@@ -23,6 +23,8 @@ public class Converter {
                 .status(false)
                 .basicService(exerciseRoutineDto.getBasicService())
                         .duration(duration)
+                        .imageUrl(exerciseRoutineDto.getImageUrl())
+                        .userId(userId)
                 .build();
     }
 }

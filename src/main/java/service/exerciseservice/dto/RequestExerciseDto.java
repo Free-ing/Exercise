@@ -38,7 +38,7 @@ public class RequestExerciseDto {
     @Builder
     @AllArgsConstructor
     public static class RoutineUpdateDto{
-        private String RoutineName;
+        private String routineName;
         private String explanation;
         private Boolean sunday;
         private Boolean saturday;

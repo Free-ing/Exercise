@@ -29,4 +29,8 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
             @Param("year") int year,
             @Param("month") int month
     );
+
+
+    @Query("SELECT er FROM ExerciseRoutine er WHERE er.status = true")
+    List<ExerciseRoutine> findActiveRoutines();
 }

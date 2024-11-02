@@ -66,14 +66,14 @@ public class ExerciseRoutine extends BaseEntity {
         this.friday = friday;
         this.saturday = saturday;
         this.sunday = sunday;
-        this.duration = duration;
         this.explanation = explanation;
         this.status = status;
         this.basicService = basicService;
         this.imageUrl = imageUrl;
+        this.duration = duration;
     }
 
-    public void update(RequestExerciseDto.RoutineUpdateDto routineUpdateDto) {
+    public void update(RequestExerciseDto.RoutineUpdateDto routineUpdateDto, long duration) {
         this.exerciseName = routineUpdateDto.getRoutineName();
         this.explanation = routineUpdateDto.getExplanation();
         this.sunday = routineUpdateDto.getSunday();
@@ -86,5 +86,6 @@ public class ExerciseRoutine extends BaseEntity {
         this.endTime = routineUpdateDto.getEndTime();
         this.startTime = routineUpdateDto.getStartTime();
         this.imageUrl = routineUpdateDto.getImageUrl();
+        this.duration = duration;
     }
 }

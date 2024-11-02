@@ -117,7 +117,7 @@ public class ExerciseController {
     }
 
     //Todo: 운동 루틴 수정
-    @PutMapping("/{routineId}/{userId}")
+    @PutMapping("/{routineId}")
     public BaseResponse<Long> updateRoutine(
             @RequestBody RequestExerciseDto.RoutineUpdateDto routineUpdateDto,
             @PathVariable Long routineId,
@@ -161,6 +161,25 @@ public class ExerciseController {
     ){
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return BaseResponse.onSuccess(exerciseQueryService.getHobbyRoutineTrackers(userId,year,month));
+
+    }
+
+
+    //Todo: 일별 일정 조회
+    @GetMapping("/home")
+    public BaseResponse<List<ResponseExerciseDto.DayRoutineDto>> getDayRoutine(
+            @RequestParam LocalDate date,
+//            @PathVariable Long userId
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        return BaseResponse.onSuccess(exerciseQueryService.getDayRoutine(date, userId));
+    }
+
+    //Todo: 다음주가 됐을 때 자동으로 일정이 생기도록 하는 기능
+    @PostMapping("/week/createRoutine")
+    public void BaseResponse(){
 
     }
 }

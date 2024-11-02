@@ -1,6 +1,7 @@
 package service.exerciseservice.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.base.exception.code.RestApiException;
@@ -40,7 +41,6 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
         // 운동 시간 계산 (분 단위)
         long durationInMinutes = calculateDuration(startTime, endTime);
-
         return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
     }
 
@@ -81,8 +81,10 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_RECORD_NOT_FOUND));
 
+        Long duration = exerciseRoutineRecord.getExerciseRoutine().getDuration();
+
         //루틴 레코드 일정 완료 표시
-        exerciseRoutineRecord.updateCompleteAndCompleteDate(true, LocalDate.now());
+        exerciseRoutineRecord.updateCompleteAndCompleteDate(true, LocalDate.now(),duration);
 
     }
 
@@ -91,7 +93,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     public void cancelRoutine(Long routineRecordId){
         ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_RECORD_NOT_FOUND));
-        exerciseRoutineRecord.updateCompleteAndCompleteDate(false, null);
+        exerciseRoutineRecord.updateCompleteAndCompleteDate(false, null,0);
 
     }
 
@@ -110,7 +112,13 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.USER_CANT_UPDATE));
 
-        exerciseRoutine.update(routineUpdateDto);
+        LocalTime startTime = routineUpdateDto.getStartTime();
+        LocalTime endTime = routineUpdateDto.getEndTime();
+
+        // 운동 시간 계산 (분 단위)
+        long durationInMinutes = calculateDuration(startTime, endTime);
+
+        exerciseRoutine.update(routineUpdateDto,durationInMinutes );
 
         return exerciseRoutine.getId();
     }
@@ -179,6 +187,24 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         exerciseRoutineRecordRepository.deleteAll(exerciseRoutineRecordList);
         exerciseWeekRecordRepository.deleteAll(exerciseWeekRecordList);
     }
+
+    //Todo: routine이 on인 건 자동으로 일정 생성되게 하기
+    @Scheduled(cron = "0 1 0 ? * MON")
+    public void createRoutineRecord(){
+        List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findActiveRoutines();
+
+        for(ExerciseRoutine exerciseRoutine : exerciseRoutineList){
+            if(exerciseRoutine.getStatus()){
+                onMentalRoutine(exerciseRoutine.getId(), LocalDate.now());
+            }
+        }
+
+    }
+
+
+
+
+
 
 
     // 운동 시간 계산 (분 단위)
