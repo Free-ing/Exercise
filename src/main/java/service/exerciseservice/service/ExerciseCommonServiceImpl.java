@@ -194,10 +194,9 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findActiveRoutines();
 
         for(ExerciseRoutine exerciseRoutine : exerciseRoutineList){
-            if(exerciseRoutine.getStatus()){
                 onMentalRoutine(exerciseRoutine.getId(), LocalDate.now());
             }
-        }
+
 
     }
 
