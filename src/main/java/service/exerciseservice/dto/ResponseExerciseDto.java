@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import service.exerciseservice.entity.BasicService;
+import service.exerciseservice.entity.ExerciseRoutineRecord;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResponseExerciseDto {
 
@@ -71,5 +74,39 @@ public class ResponseExerciseDto {
         private Long recordId;
         private Boolean complete;
 
+    }
+
+    @Getter
+    @NoArgsConstructor
+    public static class ExerciseRoutineGroupDto {
+        private Long userId;
+        private List<RoutineWithRecordsDto> routines;
+
+        @Builder
+        public ExerciseRoutineGroupDto(Long userId, List<RoutineWithRecordsDto> routines) {
+            this.userId = userId;
+            this.routines = routines;
+        }
+
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
+        public static class RoutineWithRecordsDto {
+            private Long routineId;
+            private String exerciseName;
+            private List<RecordDto> records;
+        }
+
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        @Builder
+        public static class RecordDto {
+            private Long recordId;
+            private LocalDate completeDay;
+            private long exerciseDurationTime;
+            private boolean complete;
+        }
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.entity.ExerciseRoutineRecord;
 
@@ -33,4 +34,8 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
 
     @Query("SELECT er FROM ExerciseRoutine er WHERE er.status = true")
     List<ExerciseRoutine> findActiveRoutines();
-}
+
+    @Query("SELECT er FROM ExerciseRoutine er LEFT JOIN FETCH er.exerciseRoutineRecordList records WHERE records.complete = true")
+    List<ExerciseRoutine> findAllWithRecords();
+ }
+

@@ -3,6 +3,7 @@ package service.exerciseservice.service;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
+import service.exerciseservice.entity.ExerciseRoutine;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,4 +17,7 @@ public interface ExerciseQueryService {
 
     //Todo: 마음 루틴 트래커 조회
     List<RoutineTrackerDto.ExerciseRoutineTrackerDto> getHobbyRoutineTrackers(Long userId, int year, int month);
+
+    //Todo: 운동 루틴의 기록 조회하기
+    List<ResponseExerciseDto.ExerciseRoutineGroupDto> getRoutinesGroupedByUser();
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.dto.ResponseExerciseDto;
@@ -20,8 +21,7 @@ public class OpenAiServiceImpl implements OpenAiService {
     private final ChatClient chatClient;
     private final ObjectMapper objectMapper;
 
-
-
+    //Todo: ai 운동 추천
     @Override
     public List<ResponseExerciseDto.AiExerciseResponseDto> generateHobbyRecommendations(SurveyResultDto.surveyResultDto surveyResult) {
 
@@ -52,4 +52,9 @@ public class OpenAiServiceImpl implements OpenAiService {
             throw new RuntimeException("Failed to parse AI response: " + e.getMessage(), e);
         }
     }
+
+    //Todo: 운동 리포트 작성
+    @Scheduled(cron = "0 58 23 ? * SAT")
+    public void writeExerciseReport(){}
+
 }

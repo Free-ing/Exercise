@@ -8,6 +8,7 @@ import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
 import service.exerciseservice.dto.SurveyResultDto;
+import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.service.ExerciseCommonService;
 import service.exerciseservice.service.ExerciseQueryService;
 import service.exerciseservice.service.OpenAiService;
@@ -177,9 +178,9 @@ public class ExerciseController {
         return BaseResponse.onSuccess(exerciseQueryService.getDayRoutine(date, userId));
     }
 
-    //Todo: 다음주가 됐을 때 자동으로 일정이 생기도록 하는 기능
-    @PostMapping("/week/createRoutine")
-    public void BaseResponse(){
-
+    //Todo: 회원별로 모든 루틴 리스트 조회 테스트
+    @GetMapping("/grouped-by-user")
+    public BaseResponse<List<ResponseExerciseDto.ExerciseRoutineGroupDto>> getRoutinesGroupedByUser() {
+        return BaseResponse.onSuccess(exerciseQueryService.getRoutinesGroupedByUser());
     }
 }

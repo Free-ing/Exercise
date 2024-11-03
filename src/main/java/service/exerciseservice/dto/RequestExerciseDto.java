@@ -16,8 +16,6 @@ public class RequestExerciseDto {
     public static class ExerciseRoutineDto{
         private String routineName;
         private Long routineId;
-        private Long userId;
-        private Long duration;
         private String imageUrl;
         private Boolean monday;
         private Boolean tuesday;

@@ -189,15 +189,13 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     }
 
     //Todo: routine이 on인 건 자동으로 일정 생성되게 하기
-    @Scheduled(cron = "0 1 0 ? * MON")
+    @Scheduled(cron = "0 58 23 ? * SAT")
     public void createRoutineRecord(){
         List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findActiveRoutines();
 
         for(ExerciseRoutine exerciseRoutine : exerciseRoutineList){
                 onMentalRoutine(exerciseRoutine.getId(), LocalDate.now());
             }
-
-
     }
 
 
