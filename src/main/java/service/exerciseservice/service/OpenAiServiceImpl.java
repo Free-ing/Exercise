@@ -18,14 +18,15 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class OpenAiServiceImpl implements OpenAiService {
-    private final ChatClient chatClient;
+    private final ChatClient recommendationChatClient;
     private final ObjectMapper objectMapper;
+
 
     //Todo: ai 운동 추천
     @Override
     public List<ResponseExerciseDto.AiExerciseResponseDto> generateHobbyRecommendations(SurveyResultDto.surveyResultDto surveyResult) {
 
-        String survey1 = surveyResult.getExercisePurpose();
+        String survey1 = surveyResult.getPreferredTime();
         String survey2 = surveyResult.getExerciseType();
         String survey3 = surveyResult.getExercisePurpose();
         String survey4 = surveyResult.getPreferredPlace();
@@ -34,9 +35,10 @@ public class OpenAiServiceImpl implements OpenAiService {
 
         String userMessageContent = String.format("설문조사 결과를 바탕으로 운동 추천 이유를 간단하게 제시해줘.: %s", survey);
 
-        String jsonResponse = chatClient.prompt()
+        String jsonResponse = recommendationChatClient.prompt()
                 .user(userMessageContent)
                 .call()
+
                 .content();
 
         try {
@@ -52,9 +54,5 @@ public class OpenAiServiceImpl implements OpenAiService {
             throw new RuntimeException("Failed to parse AI response: " + e.getMessage(), e);
         }
     }
-
-    //Todo: 운동 리포트 작성
-    @Scheduled(cron = "0 58 23 ? * SAT")
-    public void writeExerciseReport(){}
 
 }

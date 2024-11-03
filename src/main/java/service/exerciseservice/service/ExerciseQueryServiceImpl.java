@@ -11,10 +11,8 @@ import service.exerciseservice.repository.ExerciseRoutineRecordRepository;
 import service.exerciseservice.repository.ExerciseRoutineRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,39 +84,70 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
     }
 
 
-    //Todo: 운동 루틴의 기록 조회하기
     @Override
     public List<ResponseExerciseDto.ExerciseRoutineGroupDto> getRoutinesGroupedByUser() {
         List<ExerciseRoutine> allRoutines = exerciseRoutineRepository.findAllWithRecords();
 
-        // userId로 그룹화
         Map<Long, List<ExerciseRoutine>> routinesByUser = allRoutines.stream()
                 .collect(Collectors.groupingBy(ExerciseRoutine::getUserId));
 
-        // 그룹화된 데이터를 DTO로 변환
         return routinesByUser.entrySet().stream()
-                .map(entry -> {
-                    List<ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto> routineDtos =
-                            entry.getValue().stream()
-                                    .map(routine -> ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto.builder()
-                                            .routineId(routine.getId())
-                                            .exerciseName(routine.getExerciseName())
-                                            .records(routine.getExerciseRoutineRecordList().stream()
-                                                    .map(record -> ResponseExerciseDto.ExerciseRoutineGroupDto.RecordDto.builder()
-                                                            .recordId(record.getId())
-                                                            .completeDay(record.getCompleteDay())
-                                                            .exerciseDurationTime(record.getExerciseDurationTime())
-                                                            .complete(record.isComplete())
-                                                            .build())
-                                                    .collect(Collectors.toList()))
-                                            .build())
-                                    .collect(Collectors.toList());
-
-                    return ResponseExerciseDto.ExerciseRoutineGroupDto.builder()
-                            .userId(entry.getKey())
-                            .routines(routineDtos)
-                            .build();
-                })
+                .map(this::convertToExerciseRoutineGroupDto)
                 .collect(Collectors.toList());
+    }
+
+    private ResponseExerciseDto.ExerciseRoutineGroupDto convertToExerciseRoutineGroupDto(
+            Map.Entry<Long, List<ExerciseRoutine>> entry) {
+        List<ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto> routineDtos =
+                entry.getValue().stream()
+                        .map(this::convertToRoutineWithRecordsDto)
+                        .collect(Collectors.toList());
+
+        return ResponseExerciseDto.ExerciseRoutineGroupDto.builder()
+                .userId(entry.getKey())
+                .routines(routineDtos)
+                .build();
+    }
+
+    private ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto convertToRoutineWithRecordsDto(
+            ExerciseRoutine routine) {
+        List<ExerciseRoutineRecord> records = routine.getExerciseRoutineRecordList();
+
+        // 총 운동 시간 계산
+        long totalTime = records.stream()
+                .mapToLong(ExerciseRoutineRecord::getExerciseDurationTime)
+                .sum();
+
+        // 평균 운동 시간 계산
+        long averageTime = records.isEmpty() ? 0 : totalTime / records.size();
+
+        return ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto.builder()
+                .routineId(routine.getId())
+                .exerciseName(routine.getExerciseName())
+                .totalTime(totalTime)
+                .averageTime(averageTime)
+                .records(records.stream()
+                        .map(this::convertToRecordDto)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private ResponseExerciseDto.ExerciseRoutineGroupDto.RecordDto convertToRecordDto(
+            ExerciseRoutineRecord record) {
+        return ResponseExerciseDto.ExerciseRoutineGroupDto.RecordDto.builder()
+                .recordId(record.getId())
+                .completeDay(record.getCompleteDay())
+                .exerciseDurationTime(record.getExerciseDurationTime())
+                .duration(record.getExerciseRoutine().getDuration())
+                .day(getDayOfWeek(record.getRoutineDate()))
+                .complete(record.isComplete())
+                .build();
+    }
+
+    private String getDayOfWeek(LocalDate date) {
+        if (date == null) return null;
+        return date.getDayOfWeek()
+                .getDisplayName(TextStyle.SHORT, Locale.KOREA)
+                .toUpperCase();
     }
 }

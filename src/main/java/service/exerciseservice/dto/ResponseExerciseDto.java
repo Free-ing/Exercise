@@ -83,7 +83,7 @@ public class ResponseExerciseDto {
         private List<RoutineWithRecordsDto> routines;
 
         @Builder
-        public ExerciseRoutineGroupDto(Long userId, List<RoutineWithRecordsDto> routines) {
+        public ExerciseRoutineGroupDto(Long userId,long duration, List<RoutineWithRecordsDto> routines) {
             this.userId = userId;
             this.routines = routines;
         }
@@ -95,6 +95,8 @@ public class ResponseExerciseDto {
         public static class RoutineWithRecordsDto {
             private Long routineId;
             private String exerciseName;
+            private long totalTime;
+            private long averageTime;
             private List<RecordDto> records;
         }
 
@@ -106,6 +108,8 @@ public class ResponseExerciseDto {
             private Long recordId;
             private LocalDate completeDay;
             private long exerciseDurationTime;
+            private long duration;
+            private String day;
             private boolean complete;
         }
     }

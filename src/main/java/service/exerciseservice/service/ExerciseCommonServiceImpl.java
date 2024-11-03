@@ -301,6 +301,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                 .endTime(endTime)
                 .status(true)
                 .imageUrl(imageUrl)
+                .duration(calculateDuration(startTime,endTime))
                 .basicService(basicService)
                 .build();
     }
