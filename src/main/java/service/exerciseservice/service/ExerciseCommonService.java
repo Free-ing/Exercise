@@ -11,10 +11,10 @@ public interface ExerciseCommonService {
     Long addExerciseRoutine(Long userId, RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto);
 
     //Todo : 마음 채우기 루틴 on
-    void onMentalRoutine(Long routineId, LocalDate today);
+    void onExerciseRoutine(Long routineId, LocalDate today);
 
     //Todo : 마음 채우기 루틴 off
-    void offMentalRoutine(Long routineId, LocalDate today);
+    void offExerciseRoutine(Long routineId, LocalDate today);
 
     //Todo: 운동 일정 수행 완료
     void completeRoutine(Long routineRecordId);

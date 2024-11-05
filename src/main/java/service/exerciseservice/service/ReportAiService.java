@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.query.sql.internal.ParameterRecognizerImpl;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.dto.ResponseExerciseDto;
@@ -26,6 +27,8 @@ public class ReportAiService {
     private final ExerciseWeekRecordRepository exerciseWeekRecordRepository;
 
     //Todo: ai 피드백
+    @Scheduled(cron = "0 30 0 * * MON") // 매주 월요일 0시에 실행
+    @Transactional
     public void createAiFeedBack() throws JsonProcessingException {
         LocalDate testDate = LocalDate.parse("2024-11-11");
         LocalDate endDate = testDate.minusDays(1); // 어제(일요일)

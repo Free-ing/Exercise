@@ -89,4 +89,8 @@ public class ExerciseRoutine extends BaseEntity {
         this.imageUrl = routineUpdateDto.getImageUrl();
         this.duration = duration;
     }
+
+    public void updateStatus(boolean status){
+        this.status = status;
+    }
 }

@@ -37,7 +37,7 @@ public class ResponseExerciseDto {
         private String hobbyName;
         private String imageUrl;
         private Long routineId;
-        private Boolean monthday;
+        private Boolean monday;
         private Boolean tuesday;
         private Boolean wednesday;
         private Boolean thursday;
@@ -58,7 +58,7 @@ public class ResponseExerciseDto {
         private String Name;
         private String imageUrl;
         private Long routineId;
-        private Boolean monthday;
+        private Boolean monday;
         private Boolean tuesday;
         private Boolean wednesday;
         private Boolean thursday;

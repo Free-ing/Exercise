@@ -55,6 +55,7 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
     @Override
     public List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId) {
 
+        System.out.println(date);
         List<ResponseExerciseDto.DayRoutineDto> dayRoutineDtoList = exerciseRoutineRecordRepository.getDayRoutine(date, userId, true);
         System.out.println(dayRoutineDtoList);
         return dayRoutineDtoList;

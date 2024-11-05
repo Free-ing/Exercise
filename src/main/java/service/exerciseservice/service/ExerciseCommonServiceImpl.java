@@ -65,9 +65,10 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo : 운동 루틴 on
     @Override
-    public void onMentalRoutine(Long routineId, LocalDate today){
+    public void onExerciseRoutine(Long routineId, LocalDate today){
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
                 .orElseThrow(()-> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
+        exerciseRoutine.updateStatus(true);  // 이 부분 추가
 
         // 현재 날짜 정보 가져오기
 //        LocalDate today = LocalDate.now();
@@ -81,9 +82,11 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo : 운동 루틴 off
     @Override
-    public void offMentalRoutine(Long routineId, LocalDate today) {
+    public void offExerciseRoutine(Long routineId, LocalDate today) {
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
+
+        exerciseRoutine.updateStatus(false);  // 이 부분 추가
 
         // 현재 날짜 정보 가져오기
 //        LocalDate today = LocalDate.now();
@@ -386,6 +389,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                 .imageUrl(imageUrl)
                 .duration(calculateDuration(startTime,endTime))
                 .basicService(basicService)
+                .status(false)
                 .build();
     }
 }

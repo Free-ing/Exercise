@@ -69,26 +69,24 @@ public class ExerciseController {
 
     //Todo: 운동 루틴 켜기
     @PatchMapping("/{routineId}/on")
-    public BaseResponse<String> onMentalRoutine(
+    public BaseResponse<String> onExerciseRoutine(
             @RequestParam LocalDate date,
             @PathVariable Long routineId,
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.onMentalRoutine(routineId,date);
+        exerciseCommonService.onExerciseRoutine(routineId,date);
         return BaseResponse.onSuccess("성공적으로 루틴 일정을 켰습니다.");
     }
     //Todo: 운동 루틴 끄기
     @PatchMapping("/{routineId}/off")
-    public BaseResponse<String> offMentalRoutine(
+    public BaseResponse<String> offExerciseRoutine(
             @RequestParam LocalDate date,
             @PathVariable Long routineId,
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-
-
-        exerciseCommonService.offMentalRoutine(routineId,date);
+        exerciseCommonService.offExerciseRoutine(routineId,date);
         return BaseResponse.onSuccess("성공적으로 루틴 일정을 껐습니다.");
     }
 
@@ -208,7 +206,6 @@ public class ExerciseController {
     //Todo: ai 피드백
     @PostMapping("/aiFeedback")
     public void getFeedback(
-            @RequestHeader("Authorization") String authorizationHeader
 
     ) throws JsonProcessingException {
         reportAiService.createAiFeedBack();
@@ -228,12 +225,14 @@ public class ExerciseController {
 
     //Todo: 하나라도 수행한 일정이 있다면 조회하는 그 날짜 반환하기
 
-    @GetMapping("/home/record-week/{userId}")
+    @GetMapping("/home/record-week")
     public BaseResponse<?> getDate(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String authorizationHeader
     ) {
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
         List<ResponseExerciseDto.DayCompleteRoutine> existingDates =
                 exerciseQueryService.getCompleteDate(startDate, endDate, userId);
 
