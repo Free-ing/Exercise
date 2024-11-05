@@ -44,6 +44,7 @@ public class ExerciseRoutine extends BaseEntity {
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private BasicService basicService;
 
     @OneToMany(mappedBy = "exerciseRoutine", cascade = CascadeType.ALL)

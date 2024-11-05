@@ -1,6 +1,7 @@
 package service.exerciseservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import service.exerciseservice.dto.ResponseExerciseDto;
@@ -25,4 +26,14 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
 
     @Query("select err from ExerciseRoutineRecord err where err.userId =:userId")
     List<ExerciseRoutineRecord> findExerciseRoutineRecordLIstByUserId(Long userId);
+
+    @Modifying
+    @Query("DELETE FROM ExerciseRoutineRecord e WHERE e.userId = :userId")
+    void deleteAllByUserId(Long userId);
+
+    @Query("SELECT DISTINCT e.userId FROM ExerciseRoutineRecord e WHERE e.complete = true")
+    List<Long> findDistinctUserIdsByCompleteTrue();
+
+    List<ExerciseRoutineRecord> findByUserIdAndCompleteDayBetweenAndCompleteTrue(
+            Long userId, LocalDate startDate, LocalDate endDate);
 }

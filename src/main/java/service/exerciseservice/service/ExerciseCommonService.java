@@ -1,5 +1,7 @@
 package service.exerciseservice.service;
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.dto.RequestExerciseDto;
 
 import java.time.LocalDate;
@@ -31,4 +33,9 @@ public interface ExerciseCommonService {
 
     //Todo: 회원의 모든 운동 데이터 삭제
     void deleteExerciseDate(Long userId);
+
+    //Todo: 회원 레포트 정보 채우기
+    @Scheduled(cron = "0 0 0 * * MON") // 매주 월요일 0시에 실행
+    @Transactional
+    void createWeeklyRecords();
 }

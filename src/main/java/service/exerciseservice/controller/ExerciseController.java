@@ -1,5 +1,6 @@
 package service.exerciseservice.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -9,10 +10,7 @@ import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
 import service.exerciseservice.dto.SurveyResultDto;
 import service.exerciseservice.entity.ExerciseRoutine;
-import service.exerciseservice.service.ExerciseCommonService;
-import service.exerciseservice.service.ExerciseQueryService;
-import service.exerciseservice.service.OpenAiService;
-import service.exerciseservice.service.TokenProviderService;
+import service.exerciseservice.service.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +25,16 @@ public class ExerciseController {
     private final ExerciseQueryService exerciseQueryService;
     private final OpenAiService openAiService;
     private final TokenProviderService tokenProviderService;
+    private final ReportAiService reportAiService;
+
+
+    @GetMapping("/health_check")
+    public String status(){
+        return "Exercise Service is working fine!";
+    }
+
+
+
     //Todo: 운동루틴 추가
     @PostMapping("/routine")
     public BaseResponse<Long> addExerciseRoutine(
@@ -42,7 +50,7 @@ public class ExerciseController {
     public BaseResponse<List<ResponseExerciseDto.AiExerciseResponseDto>> recommendationExercise(
             @RequestBody SurveyResultDto.surveyResultDto surveyResultDto
     ){
-
+        System.out.println("운동 추천 시작!!!!!!!!!!!!!!!");
         openAiService.generateHobbyRecommendations(surveyResultDto);
         return BaseResponse.onSuccess(openAiService.generateHobbyRecommendations(surveyResultDto));
     }
@@ -134,11 +142,9 @@ public class ExerciseController {
     //Todo: 회원의 운동 데이터 모두 삭제
     @DeleteMapping("/users/{userId}")
     public BaseResponse<String> deleteExerciseData(
-//            @PathVariable Long userId,
-            @RequestHeader("Authorization") String authorizationHeader
-
+            @PathVariable Long userId
     ){
-        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+//        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
 
         exerciseCommonService.deleteExerciseDate(userId);
         return BaseResponse.onSuccess("성공적으로 회원의 모든 데이터가 삭제됐습니다.");
@@ -181,6 +187,41 @@ public class ExerciseController {
     //Todo: 회원별로 모든 루틴 리스트 조회 테스트
     @GetMapping("/grouped-by-user")
     public BaseResponse<List<ResponseExerciseDto.ExerciseRoutineGroupDto>> getRoutinesGroupedByUser() {
-        return BaseResponse.onSuccess(exerciseQueryService.getRoutinesGroupedByUser());
+        LocalDate testDate = LocalDate.parse("2024-11-11");
+        LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
+//        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
+        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
+        return BaseResponse.onSuccess(exerciseQueryService.getRoutinesGroupedByUser(startDate,endDate)
+        );
+    }
+
+    //Todo: 운동 보고서 작성
+    @PostMapping("/report-list")
+    public void getReportList(
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ){
+        exerciseCommonService.createWeeklyRecords();
+    }
+
+    //Todo: ai 피드백
+    @PostMapping("/aiFeedback")
+    public void getFeedback(
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ) throws JsonProcessingException {
+        reportAiService.createAiFeedBack();
+    }
+
+    //Todo: 운동 피드백 리스트 조회
+    @GetMapping("/report-list")
+    public BaseResponse<List<ResponseExerciseDto.ReportDto>> getReportList(
+            @RequestParam int year,
+            @RequestParam int month,
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        return BaseResponse.onSuccess(exerciseQueryService.getFeedbackList(year, month,userId));
     }
 }

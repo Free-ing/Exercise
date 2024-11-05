@@ -25,7 +25,7 @@ public class ResponseExerciseDto {
     @NoArgsConstructor
     @Builder
     public static class AiExerciseResponseDto{
-        private String hobbyName;
+        private String exerciseName;
         private String explanation;
 
     }
@@ -95,8 +95,7 @@ public class ResponseExerciseDto {
         public static class RoutineWithRecordsDto {
             private Long routineId;
             private String exerciseName;
-            private long totalTime;
-            private long averageTime;
+            private String explanation;
             private List<RecordDto> records;
         }
 
@@ -107,10 +106,53 @@ public class ResponseExerciseDto {
         public static class RecordDto {
             private Long recordId;
             private LocalDate completeDay;
-            private long exerciseDurationTime;
             private long duration;
             private String day;
             private boolean complete;
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ReportDto {
+        private long totalExerciseTime;
+        private Long avgExerciseTime;
+        private LocalDate startTime;
+        private LocalDate endTime;
+        private Long monTime;
+        private Long tueTime;
+        private Long wenTime;
+        private Long thuTime;
+        private Long friTime;
+        private Long satTime;
+        private Long sunTime;
+        private String feedBack;
+        private List<ExecuteRoutineDto> exerciseRoutineDtoList;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ExecuteRoutineDto {
+        private String name;
+        private String imageUrl;
+        private long routineTime;
+    }
+
+    // 운동 정보를 임시 저장하기 위한 헬퍼 클래스
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class RoutineInfo {
+        private final String name;
+        private final String imageUrl;
+        private long totalTime;
+
+        public void addTime(long time) {
+            this.totalTime += time;
         }
     }
 }

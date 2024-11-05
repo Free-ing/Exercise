@@ -1,6 +1,7 @@
 package service.exerciseservice.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -35,7 +36,32 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
     @Query("SELECT er FROM ExerciseRoutine er WHERE er.status = true")
     List<ExerciseRoutine> findActiveRoutines();
 
-    @Query("SELECT er FROM ExerciseRoutine er LEFT JOIN FETCH er.exerciseRoutineRecordList records WHERE records.complete = true")
-    List<ExerciseRoutine> findAllWithRecords();
+//    @Query("SELECT DISTINCT er FROM ExerciseRoutine er LEFT JOIN FETCH er.exerciseRoutineRecordList records " +
+//            "WHERE records.complete = true " +
+//            "AND er.startTime != null " +
+//            "AND er.endTime != null " +
+//            "AND records.routineDate BETWEEN :startDate AND :endDate")
+//    List<ExerciseRoutine> findAllWithRecords(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+
+//    @Query("SELECT DISTINCT er FROM ExerciseRoutine er " +
+//            "LEFT JOIN FETCH er.exerciseRoutineRecordList records " +
+//            "WHERE er.startTime IS NOT NULL " +
+//            "AND er.endTime IS NOT NULL " +
+//            "AND records.complete = true ")
+//    List<ExerciseRoutine> findAllWithRecords();
+
+
+    @Query("SELECT DISTINCT er FROM ExerciseRoutine er " +
+            "LEFT JOIN FETCH er.exerciseRoutineRecordList records " +
+            "WHERE er.startTime IS NOT NULL " +
+            "AND er.endTime IS NOT NULL " +
+            "AND records.complete = true "+
+            "AND records.routineDate BETWEEN :startDate AND :endDate")
+    List<ExerciseRoutine> findAllWithRecords(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Modifying
+    @Query("DELETE FROM ExerciseRoutine e WHERE e.userId = :userId")
+    void deleteAllByUserId(Long userId);
  }
 

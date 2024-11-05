@@ -19,5 +19,13 @@ public interface ExerciseQueryService {
     List<RoutineTrackerDto.ExerciseRoutineTrackerDto> getHobbyRoutineTrackers(Long userId, int year, int month);
 
     //Todo: 운동 루틴의 기록 조회하기
-    List<ResponseExerciseDto.ExerciseRoutineGroupDto> getRoutinesGroupedByUser();
+
+    //Todo: user별 루틴 기록 리스트 만들기
+    List<ResponseExerciseDto.ExerciseRoutineGroupDto> getRoutinesGroupedByUser(LocalDate startDate, LocalDate endDate);
+
+    //Todo: user별 루틴 기록 리스트 만들기
+//    List<ResponseExerciseDto.ExerciseRoutineGroupDto> getRoutinesGroupedByUser();
+
+    //Todo: 운동 피드백 리스트 조회
+    List<ResponseExerciseDto.ReportDto> getFeedbackList(int year, int month, Long userId);
 }
