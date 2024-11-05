@@ -3,6 +3,7 @@ package service.exerciseservice.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.entity.ExerciseRoutine;
@@ -36,4 +37,42 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
 
     List<ExerciseRoutineRecord> findByUserIdAndCompleteDayBetweenAndCompleteTrue(
             Long userId, LocalDate startDate, LocalDate endDate);
+
+
+//        @Query("SELECT DISTINCT e.routineDate FROM ExerciseRoutineRecord e " +
+//                "WHERE e.userId = :userId " +
+//                "AND e.routineDate BETWEEN :startDate AND :endDate " +
+//                "AND e.complete = true " +
+//                "ORDER BY e.routineDate")
+//        List<ResponseExerciseDto.DayCompleteRoutine> findCompletedDatesByUserIdAndDateRange(
+//                @Param("userId") Long userId,
+//                @Param("startDate") LocalDate startDate,
+//                @Param("endDate") LocalDate endDate
+//        );
+//
+//    @Query("SELECT new service.exerciseservice.dto.ResponseExerciseDto$DayCompleteRoutine(e.routineDate) " +
+//            "FROM ExerciseRoutineRecord e " +
+//            "WHERE e.userId = :userId " +
+//            "AND e.routineDate BETWEEN :startDate AND :endDate " +
+//            "AND e.complete = true " +
+//            "GROUP BY e.routineDate " +
+//            "ORDER BY e.routineDate")
+//    List<ResponseExerciseDto.DayCompleteRoutine> findCompletedDatesByUserIdAndDateRange(
+//            @Param("userId") Long userId,
+//            @Param("startDate") LocalDate startDate,
+//            @Param("endDate") LocalDate endDate
+//    );
+
+    @Query("SELECT new service.exerciseservice.dto.ResponseExerciseDto$DayCompleteRoutine(e.routineDate) " +
+            "FROM ExerciseRoutineRecord e " +
+            "WHERE e.userId = :userId " +
+            "AND e.routineDate BETWEEN :startDate AND :endDate " +
+            "AND e.complete = true " +
+            "GROUP BY e.routineDate " +
+            "ORDER BY e.routineDate")
+    List<ResponseExerciseDto.DayCompleteRoutine> findCompletedDatesByUserIdAndDateRange(
+            @Param("userId") Long userId,
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate
+    );
 }

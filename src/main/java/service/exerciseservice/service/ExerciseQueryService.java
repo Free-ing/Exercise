@@ -1,5 +1,6 @@
 package service.exerciseservice.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
@@ -28,4 +29,9 @@ public interface ExerciseQueryService {
 
     //Todo: 운동 피드백 리스트 조회
     List<ResponseExerciseDto.ReportDto> getFeedbackList(int year, int month, Long userId);
+
+    @Transactional(readOnly = true)
+    List<ResponseExerciseDto.DayCompleteRoutine> getCompleteDate(LocalDate startDate, LocalDate endDate, Long userId);
+
+    //Todo: 일주일간 일정을 하나라도 완료한 것이 있다면 반환
 }

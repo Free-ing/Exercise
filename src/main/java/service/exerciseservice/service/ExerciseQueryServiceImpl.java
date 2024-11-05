@@ -2,6 +2,7 @@ package service.exerciseservice.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
@@ -170,11 +171,15 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
     }
 
 
-
-    //Todo: 일주일간 일정을 하나라도 완료한 것이 있다면 반환
-    public void getCompleteDate(){
-
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResponseExerciseDto.DayCompleteRoutine> getCompleteDate(LocalDate startDate, LocalDate endDate, Long userId) {
+        return exerciseRoutineRecordRepository.findCompletedDatesByUserIdAndDateRange(userId, startDate, endDate);
     }
+
+
+
+
     private ResponseExerciseDto.ExerciseRoutineGroupDto convertToExerciseRoutineGroupDto(
             Map.Entry<Long, List<ExerciseRoutine>> entry) {
         List<ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto> routineDtos =

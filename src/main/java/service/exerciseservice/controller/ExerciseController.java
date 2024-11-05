@@ -13,6 +13,7 @@ import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.service.*;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -223,5 +224,23 @@ public class ExerciseController {
     ){
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return BaseResponse.onSuccess(exerciseQueryService.getFeedbackList(year, month,userId));
+    }
+
+    //Todo: 하나라도 수행한 일정이 있다면 조회하는 그 날짜 반환하기
+
+    @GetMapping("/home/record-week/{userId}")
+    public BaseResponse<?> getDate(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
+            @PathVariable Long userId
+    ) {
+        List<ResponseExerciseDto.DayCompleteRoutine> existingDates =
+                exerciseQueryService.getCompleteDate(startDate, endDate, userId);
+
+        if (existingDates.isEmpty()) {
+            return BaseResponse.onSuccess(Collections.emptyList());
+        }
+
+        return BaseResponse.onSuccess(existingDates);
     }
 }
