@@ -171,6 +171,10 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
 
 
 
+    //Todo: 일주일간 일정을 하나라도 완료한 것이 있다면 반환
+    public void getCompleteDate(){
+
+    }
     private ResponseExerciseDto.ExerciseRoutineGroupDto convertToExerciseRoutineGroupDto(
             Map.Entry<Long, List<ExerciseRoutine>> entry) {
         List<ResponseExerciseDto.ExerciseRoutineGroupDto.RoutineWithRecordsDto> routineDtos =

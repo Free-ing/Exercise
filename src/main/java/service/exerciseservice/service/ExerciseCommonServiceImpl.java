@@ -45,11 +45,21 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     //Todo: 운동 루틴 추가하기
     @Override
     public Long addExerciseRoutine(Long userId, RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto){
-        LocalTime startTime = exerciseRoutineDto.getStartTime();
-        LocalTime endTime = exerciseRoutineDto.getEndTime();
+            LocalTime startTime;
+            LocalTime endTime;
+            long durationInMinutes;
+
+            if(exerciseRoutineDto.getStartTime() != null && exerciseRoutineDto.getEndTime() !=null){
+                startTime = exerciseRoutineDto.getStartTime();
+                endTime = exerciseRoutineDto.getEndTime();
+                durationInMinutes = calculateDuration(startTime, endTime);
+
+            }else {
+                durationInMinutes = 0;
+            }
+
 
         // 운동 시간 계산 (분 단위)
-        long durationInMinutes = calculateDuration(startTime, endTime);
         return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
     }
 
@@ -137,45 +147,35 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     @Override
     public void createDefaultService(Long userId) {
         ExerciseRoutine staticRoutine = createMentalRoutine(userId, "정적 스트레칭", """
-                        정적 스트레칭은 근육을 천천히 늘려 15-30초간 자세를 유지하는 방법입니다. 운동 후나 일상생활에서 뭉친 근육을 풀어주고 유연성을 향상시키는데 효과적이에요. 특히 목, 어깨, 허리 같은 피로가 쌓이기 쉬운 부위에 좋습니다. 단, 운동 전에는 동적 스트레칭이 더 적합하니 주의하세요!
-
-                         1. 햄스트링 스트레칭 (뒷벅지)
-                        다리를 앞으로 쭉 펴고 앉아서, 발끝을 몸 쪽으로 당기며 상체를 앞으로 천천히 숙여주세요. 무릎이 굽혀지지 않도록 하고 20초간 유지합니다.
-                         \n2. 목 옆 스트레칭 (승모근)
-                        편안하게 앉은 자세에서 오른손으로 머리를 잡고 오른쪽 귀가 오른쪽 어깨를 향하도록 천천히 당깁니다. 반대쪽 어깨가 올라가지 않도록 주의하며 15초간 유지해주세요.\s
+                        정적 스트레칭은 근육을 천천히 늘려 15-30초간 자세를 유지하는 방법입니다.\n\n 운동 후나 일상생활에서 뭉친 근육을 풀어주고 유연성을 향상시키는데 효과적이에요.\n\n 특히 목, 어깨, 허리 같은 피로가 쌓이기 쉬운 부위에 좋습니다.\n\n 단, 운동 전에는 동적 스트레칭이 더 적합하니 주의하세요!
                         """,
                 LocalTime.of(20, 0, 0), LocalTime.of(22, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/static_stretching.png", BasicService.STATIC_STRETCHING);
 
         ExerciseRoutine dynamicRoutine = createMentalRoutine(userId, "동적 스트레칭", """
-                        동적 스트레칭은 관절을 부드럽게 움직이며 근육을 능동적으로 늘리는 방법입니다. 운동 전 워밍업으로 적합하며, 근육의 체온을 높이고 혈액순환을 촉진시켜 운동 수행능력을 향상시킵니다. 특히 관절의 가동범위를 늘리고 부상 예방에도 효과적이에요!
-
-                         1. 팔 돌리기 (어깨 관절)
-                        양팔을 옆으로 들어 올려 앞에서 뒤로 크게 원을 그리며 돌려줍니다. 10회 정도 실시한 후, 반대 방향으로도 같은 횟수만큼 실시해주세요.
-                         \n2. 목 옆 스트레칭 (승모근)
-                        한 손으로 벽을 짚고 서서 한쪽 다리를 앞뒤로 자연스럽게 흔들어줍니다. 점점 높이를 높여가며 각 방향으로 10회씩 실시하고 반대쪽도 같은 방법으로 진행합니다.\s
+                        동적 스트레칭은 관절을 부드럽게 움직이며 근육을 능동적으로 늘리는 방법입니다.\n\n 운동 전 워밍업으로 적합하며, 근육의 체온을 높이고 혈액순환을 촉진시켜 운동 수행능력을 향상시킵니다.\n\n 특히 관절의 가동범위를 늘리고 부상 예방에도 효과적이에요!
                         """,
                 LocalTime.of(20, 0, 0), LocalTime.of(22, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/dynamic_stretching.png", BasicService.DYNAMIC_STRETCHING);
 
         ExerciseRoutine workRoutine = createMentalRoutine(userId, "걷기", """
-                        걷기는 모든 연령대가 쉽게 할 수 있는 기초적인 유산소 운동입니다. 심장 건강 증진, 체중 관리, 스트레스 해소에 효과적이며 관절에 무리가 적어 안전합니다. 하루 30분 이상, 약간 숨이 찰 정도의 속도로 걷는 것이 좋아요!
-
-                         1. 기본 걷기
-                        바른 자세로 시선은 전방 15도를 바라보고, 팔은 자연스럽게 흔들며 발뒤꿈치부터 착지합니다. 처음에는 15-20분부터 시작해서 점차 시간을 늘려가세요."
-                         \n2. 파워 워킹
-                        일반 걷기보다 빠른 속도로 팔을 크게 흔들며 걷습니다. 복근에 힘을 주고 보폭을 넓게 하여 운동 강도를 높일 수 있어요.\s 
+                        걷기는 모든 연령대가 쉽게 할 수 있는 기초적인 유산소 운동입니다.\n\n 심장 건강 증진, 체중 관리, 스트레스 해소에 효과적이며 관절에 무리가 적어 안전합니다.\n\n 하루 30분 이상, 약간 숨이 찰 정도의 속도로 걷는 것이 좋아요!
                         """,
                 LocalTime.of(20, 0, 0), LocalTime.of(22, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/walking.png", BasicService.WORKING);
 
+//        1. 기본 걷기
+//        바른 자세로 시선은 전방 15도를 바라보고, 팔은 자연스럽게 흔들며 발뒤꿈치부터 착지합니다. 처음에는 15-20분부터 시작해서 점차 시간을 늘려가세요."
+//
+//        2. 파워 워킹
+//        일반 걷기보다 빠른 속도로 팔을 크게 흔들며 걷습니다. 복근에 힘을 주고 보폭을 넓게 하여 운동 강도를 높일 수 있어요.s
 
         ExerciseRoutine runRoutine = createMentalRoutine(userId, "달리기", """
-                        기는 체력 향상과 체중 감량에 매우 효과적인 유산소 운동입니다. 심폐지구력을 향상시키고 칼로리 소모가 크며, 달리기 후 분비되는 엔도르핀으로 스트레스 해소에도 도움이 됩니다. 단, 무릎 등 관절에 충격이 있으니 적절한 준비운동이 필수에요!
-
-                         1. 조깅
-                        편안한 속도로 일정한 페이스를 유지하며 달립니다. 발바닥 전체로 착지하고, 팔은 90도로 굽혀 자연스럽게 흔드세요. 초보자는 10-15분부터 시작하는 것이 좋습니다.
-                         \n2. 인터벌 러닝
-                        빠른 달리기와 걷기 또는 천천히 달리기를 번갈아 하는 방법입니다. 예를 들어 2분 달리기 후 1분 걷기를 반복하는 식으로 진행하면 짧은 시간에 더 많은 칼로리를 소모하고, 기초대사량 증가와 심폐지구력 향상시킬 수 있어요.\s
+                        달리기는 체력 향상과 체중 감량에 매우 효과적인 유산소 운동입니다.\n\n 심폐지구력을 향상시키고 칼로리 소모가 크며, 달리기 후 분비되는 엔도르핀으로 스트레스 해소에도 도움이 됩니다.\n\n 단, 무릎 등 관절에 충격이 있으니 적절한 준비운동이 필수에요!
                         """,
                 LocalTime.of(20, 0, 0), LocalTime.of(22, 0, 0), "https://freeingimage.s3.ap-northeast-2.amazonaws.com/running.png", BasicService.RUNNING);
+//        1. 조깅
+//        편안한 속도로 일정한 페이스를 유지하며 달립니다. 발바닥 전체로 착지하고, 팔은 90도로 굽혀 자연스럽게 흔드세요. 초보자는 10-15분부터 시작하는 것이 좋습니다.
+//
+//        2. 인터벌 러닝
+//        빠른 달리기와 걷기 또는 천천히 달리기를 번갈아 하는 방법입니다. 예를 들어 2분 달리기 후 1분 걷기를 반복하는 식으로 진행하면 짧은 시간에 더 많은 칼로리를 소모하고, 기초대사량 증가와 심폐지구력 향상시킬 수 있어요.s
 
         exerciseRoutineRepository.save(staticRoutine);
         exerciseRoutineRepository.save(dynamicRoutine);
