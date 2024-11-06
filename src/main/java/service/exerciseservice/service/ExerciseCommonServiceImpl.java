@@ -134,12 +134,20 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.USER_CANT_UPDATE));
 
-        LocalTime startTime = routineUpdateDto.getStartTime();
-        LocalTime endTime = routineUpdateDto.getEndTime();
+        LocalTime startTime;
+        LocalTime endTime;
+        long durationInMinutes;
+        if(routineUpdateDto.getStartTime() != null && routineUpdateDto.getEndTime() !=null){
+
+            startTime = routineUpdateDto.getStartTime();
+            endTime = routineUpdateDto.getEndTime();
+            durationInMinutes = calculateDuration(startTime, endTime);
+
+        }else {
+            durationInMinutes = 0;
+        }
 
         // 운동 시간 계산 (분 단위)
-        long durationInMinutes = calculateDuration(startTime, endTime);
-
         exerciseRoutine.update(routineUpdateDto,durationInMinutes );
 
         return exerciseRoutine.getId();
@@ -211,7 +219,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     @Override
     public void createWeeklyRecords() {
         // 지난 주의 시작일(월요일)과 종료일(일요일) 계산
-        LocalDate testDate = LocalDate.parse("2024-11-11");
+        LocalDate testDate = LocalDate.parse("2024-12-09");
         LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
@@ -284,7 +292,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         return records.stream()
                 .filter(record -> record.getCompleteDay() != null)
                 .collect(Collectors.groupingBy(
-                        record -> record.getCompleteDay().getDayOfWeek(),
+                        record -> record.getRoutineDate().getDayOfWeek(),
                         Collectors.summingInt(record -> (int) record.getExerciseDurationTime())
                 ));
     }

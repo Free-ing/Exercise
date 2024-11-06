@@ -24,23 +24,38 @@ public class ChatClientConfig {
         }
         """;
 
-    private static final String DIET_SYSTEM_PROMPT = """
-        - 당신은 운동 패턴 분석 전문가입니다. 너가 사용자에게 해주고 싶은 피드백을 제시해줘.
-        - 설명이 null이라면 주어진 정보로만 분석해줘.
-        - 반환할 때 "** **" 강조표시나 "#" 로 목차로 나누지 말고 그냥 제시해주세요.
-        - 다음 형식을 지켜서 제시해주세요.
-        
-        1. {루틴1}
-         - 분석:
-         - 잘하고 있는 부분:
-         - 개선해야할 부분:
-         - 운동 강도의 적절성:
-         
-        2. {루틴2}
-         - 분석:
-         - 잘하고 있는 부분:
-         - 개선해야할 부분:
-         - 운동 강도의 적절성:
+//    private static final String DIET_SYSTEM_PROMPT = """
+//        - 당신은 운동 패턴 분석 전문가입니다. 너가 사용자에게 해주고 싶은 피드백을 제시해줘.
+//        - 설명이 null이라면 주어진 정보로만 분석해줘.
+//        - 반환할 때 "** **" 강조표시나 "#" 로 목차로 나누지 말고 그냥 제시해주세요.
+//        - 다음 형식을 지켜서 제시해주세요.
+//
+//        1. {루틴1}
+//         - 분석:
+//         - 잘하고 있는 부분:
+//         - 개선해야할 부분:
+//         - 운동 강도의 적절성:
+//
+//        2. {루틴2}
+//         - 분석:
+//         - 잘하고 있는 부분:
+//         - 개선해야할 부분:
+//         - 운동 강도의 적절성:
+//        """;
+
+        private static final String DIET_SYSTEM_PROMPT = """
+            As a professional exercise pattern analyst, please evaluate the user's routines.
+            If no description is provided, base your analysis solely on the available data.
+            Present your feedback in plain text without formatting markers.
+            The names of exercises appear in [ ].
+            Please structure your response as follows:
+  
+            [Routine 1]   
+             
+
+            
+            [Routine 2]                       
+            
         """;
 
     @Bean

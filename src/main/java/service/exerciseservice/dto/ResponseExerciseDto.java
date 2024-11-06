@@ -167,4 +167,15 @@ public class ResponseExerciseDto {
             this.completeDate = completeDate;
         }
     }
+
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class FeedbackDayListDto {
+        private Long feedbackId;
+        private LocalDate startDate;
+        private LocalDate endDate;
+    }
 }

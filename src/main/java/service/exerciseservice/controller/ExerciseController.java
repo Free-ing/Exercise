@@ -186,7 +186,7 @@ public class ExerciseController {
     //Todo: 회원별로 모든 루틴 리스트 조회 테스트
     @GetMapping("/grouped-by-user")
     public BaseResponse<List<ResponseExerciseDto.ExerciseRoutineGroupDto>> getRoutinesGroupedByUser() {
-        LocalDate testDate = LocalDate.parse("2024-11-11");
+        LocalDate testDate = LocalDate.parse("2024-12-09");
         LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
@@ -211,16 +211,27 @@ public class ExerciseController {
         reportAiService.createAiFeedBack();
     }
 
-    //Todo: 운동 피드백 리스트 조회
+    //Todo: 운동 피드백 리스트 조회(날짜)
     @GetMapping("/report-list")
-    public BaseResponse<List<ResponseExerciseDto.ReportDto>> getReportList(
+    public BaseResponse<List<ResponseExerciseDto.FeedbackDayListDto>> getFeedbackDayList(
             @RequestParam int year,
             @RequestParam int month,
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        return BaseResponse.onSuccess(exerciseQueryService.getFeedbackList(year, month,userId));
+        return BaseResponse.onSuccess(exerciseQueryService.getFeedbackDayList(year, month,userId));
+    }
+
+    //Todo: 운동 피드백 상세 조회
+    @GetMapping("/report/{reportId}")
+    public BaseResponse<ResponseExerciseDto.ReportDto> getReportList(
+            @PathVariable Long reportId,
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        return BaseResponse.onSuccess(exerciseQueryService.getFeedback(reportId, userId));
     }
 
     //Todo: 하나라도 수행한 일정이 있다면 조회하는 그 날짜 반환하기

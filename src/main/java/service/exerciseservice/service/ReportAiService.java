@@ -25,12 +25,13 @@ public class ReportAiService {
     private final ObjectMapper objectMapper;
     private final ExerciseQueryService exerciseQueryService;
     private final ExerciseWeekRecordRepository exerciseWeekRecordRepository;
+    private final TranslationService translationService;
 
     //Todo: ai 피드백
     @Scheduled(cron = "0 30 0 * * MON") // 매주 월요일 0시에 실행
     @Transactional
     public void createAiFeedBack() throws JsonProcessingException {
-        LocalDate testDate = LocalDate.parse("2024-11-11");
+        LocalDate testDate = LocalDate.parse("2024-12-09");
         LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
@@ -44,15 +45,18 @@ public class ReportAiService {
 
             ExerciseWeekRecord exerciseWeekRecord = exerciseWeekRecordRepository.findByUserId(record.getUserId(),startDate, endDate);
 
-            String userMessageContent = String.format("사용자가 진행한 운동에 대해서 분석하고, 권고사항도 제시해줘.: %s", recordJson);
+            String userMessageContent = String.format("Analyze the user's workout history and provide personalized recommendations and guidelines.: %s", recordJson);
+
 
             String jsonResponse = reportChatClient.prompt()
                     .user(userMessageContent)
                     .call()
                     .content();
 
-            exerciseWeekRecord.setAiFeedback(jsonResponse);
-            System.out.println(jsonResponse);
+            String translatedContent = translationService.translateToKorean(jsonResponse);
+
+            exerciseWeekRecord.setAiFeedback(translatedContent);
+            System.out.println(translatedContent);
         }
     }
 }

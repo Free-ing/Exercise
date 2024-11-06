@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.entity.ExerciseRoutine;
 import service.exerciseservice.entity.ExerciseWeekRecord;
 
@@ -24,4 +25,7 @@ public interface ExerciseWeekRecordRepository extends JpaRepository<ExerciseWeek
 
     @Query("select ewr from ExerciseWeekRecord  ewr where YEAR(ewr.endDate) = :year and MONTH(ewr.endDate) = :month and ewr.userId = :userId")
     List<ExerciseWeekRecord> findByYearAndMonthAndUserId(int year, int month, Long userId);
+
+    @Query("select new service.exerciseservice.dto.ResponseExerciseDto$FeedbackDayListDto (ewr.exerciseWeekRecordId, ewr.startDate, ewr.endDate) from ExerciseWeekRecord ewr where ewr.userId = :userId and YEAR(ewr.endDate) = :year and MONTH(ewr.endDate) = :month ")
+    List<ResponseExerciseDto.FeedbackDayListDto> findFeedbackDayList(int year, int month, long userId);
 }

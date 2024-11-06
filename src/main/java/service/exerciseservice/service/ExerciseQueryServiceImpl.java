@@ -3,6 +3,8 @@ package service.exerciseservice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import service.exerciseservice.base.exception.code.RestApiException;
+import service.exerciseservice.base.exception.code.RoutineErrorStatus;
 import service.exerciseservice.dto.RequestExerciseDto;
 import service.exerciseservice.dto.ResponseExerciseDto;
 import service.exerciseservice.dto.RoutineTrackerDto;
@@ -56,7 +58,7 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
     public List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId) {
 
         System.out.println(date);
-        List<ResponseExerciseDto.DayRoutineDto> dayRoutineDtoList = exerciseRoutineRecordRepository.getDayRoutine(date, userId, true);
+        List<ResponseExerciseDto.DayRoutineDto> dayRoutineDtoList = exerciseRoutineRecordRepository.getDayRoutine(date, userId);
         System.out.println(dayRoutineDtoList);
         return dayRoutineDtoList;
 
@@ -103,72 +105,77 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
                 .collect(Collectors.toList());
     }
 
-    //Todo: 운동 피드백 리스트 조회
+
+    //Todo: 운동 피드백 리스트(날짜 조회)
     @Override
-    public List<ResponseExerciseDto.ReportDto> getFeedbackList(int year, int month, Long userId){
-        List<ResponseExerciseDto.ReportDto> reportDtoList = new ArrayList<>();
-        List<ExerciseWeekRecord> exerciseWeekRecordList = exerciseWeekRecordRepository.findByYearAndMonthAndUserId(year,month,userId);
+    public List<ResponseExerciseDto.FeedbackDayListDto> getFeedbackDayList(int year, int month, long userId){
+        return  exerciseWeekRecordRepository.findFeedbackDayList(year,month,userId);
+    }
 
-        for (ExerciseWeekRecord exerciseWeekRecord : exerciseWeekRecordList) {
-            LocalDate startTime = exerciseWeekRecord.getStartDate();
-            LocalDate endTime = exerciseWeekRecord.getEndDate();
+    //Todo: 운동 피드백 상세 조회
+    @Override
+    public ResponseExerciseDto.ReportDto getFeedback(long feedbackId, long userId) {
+//        List<ResponseExerciseDto.ReportDto> reportDtoList = new ArrayList<>();
+//        List<ExerciseWeekRecord> exerciseWeekRecordList = exerciseWeekRecordRepository.findByYearAndMonthAndUserId(year,month,userId);
 
-            // 해당 기간의 운동 기록들을 조회
-            List<ExerciseRoutineRecord> routineRecords = exerciseRoutineRecordRepository
-                    .findByUserIdAndCompleteDayBetweenAndCompleteTrue(userId, startTime, endTime);
+        ExerciseWeekRecord exerciseWeekRecord = exerciseWeekRecordRepository.findById(feedbackId)
+                .orElseThrow(() -> new RestApiException(RoutineErrorStatus.EXERCISE_WEEK_RECORD_NOT_FOUND));
 
-            // 운동별로 그룹화하여 총 시간 계산
-            Map<String, ResponseExerciseDto.RoutineInfo> routineInfoMap = new HashMap<>();
+        LocalDate startTime = exerciseWeekRecord.getStartDate();
+        LocalDate endTime = exerciseWeekRecord.getEndDate();
 
-            for (ExerciseRoutineRecord record : routineRecords) {
-                ExerciseRoutine routine = record.getExerciseRoutine();
-                String exerciseName = record.getExerciseName();
+        // 해당 기간의 운동 기록들을 조회
+        List<ExerciseRoutineRecord> routineRecords = exerciseRoutineRecordRepository
+                .findByUserIdAndCompleteDayBetweenAndCompleteTrue(userId, startTime, endTime);
 
-                routineInfoMap.computeIfAbsent(exerciseName, k -> new ResponseExerciseDto.RoutineInfo(
-                        exerciseName,
-                        routine.getImageUrl(),
-                        0L
-                )).addTime(record.getExerciseDurationTime());
-            }
+        // 운동별로 그룹화하여 총 시간 계산
+        Map<String, ResponseExerciseDto.RoutineInfo> routineInfoMap = new HashMap<>();
 
-            // 총 운동 시간 계산
-            long totalExerciseTime = routineRecords.stream()
-                    .mapToLong(ExerciseRoutineRecord::getExerciseDurationTime)
-                    .sum();
+        for (ExerciseRoutineRecord record : routineRecords) {
+            ExerciseRoutine routine = record.getExerciseRoutine();
+            String exerciseName = record.getExerciseName();
 
-            // 일평균 운동 시간 계산 (7일 기준)
-            long avgExerciseTime = totalExerciseTime / 7;
-
-            // executeRoutineDto 리스트 생성
-            List<ResponseExerciseDto.ExecuteRoutineDto> executionRoutineDtoList = routineInfoMap.values().stream()
-                    .map(info -> ResponseExerciseDto.ExecuteRoutineDto.builder()
-                            .name(info.getName())
-                            .imageUrl(info.getImageUrl())
-                            .routineTime(info.getTotalTime())
-                            .build())
-                    .collect(Collectors.toList());
-
-            // ReportDto 생성
-            ResponseExerciseDto.ReportDto reportDto = ResponseExerciseDto.ReportDto.builder()
-                    .totalExerciseTime(totalExerciseTime)
-                    .avgExerciseTime(avgExerciseTime)
-                    .startTime(startTime)
-                    .endTime(endTime)
-                    .monTime(exerciseWeekRecord.getMonTime())
-                    .tueTime(exerciseWeekRecord.getTueTime())
-                    .wenTime(exerciseWeekRecord.getWenTime())
-                    .thuTime(exerciseWeekRecord.getThuTime())
-                    .friTime(exerciseWeekRecord.getFriTime())
-                    .satTime(exerciseWeekRecord.getSatTime())
-                    .sunTime(exerciseWeekRecord.getSunTime())
-                    .feedBack(exerciseWeekRecord.getAiFeedback())
-                    .exerciseRoutineDtoList(executionRoutineDtoList)  // executeRoutineDto 리스트 사용
-                    .build();
-
-            reportDtoList.add(reportDto);
+            routineInfoMap.computeIfAbsent(exerciseName, k -> new ResponseExerciseDto.RoutineInfo(
+                    exerciseName,
+                    routine.getImageUrl(),
+                    0L
+            )).addTime(record.getExerciseDurationTime());
         }
 
-        return reportDtoList;
+        // 총 운동 시간 계산
+        long totalExerciseTime = routineRecords.stream()
+                .mapToLong(ExerciseRoutineRecord::getExerciseDurationTime)
+                .sum();
+
+        // 일평균 운동 시간 계산 (7일 기준)
+        long avgExerciseTime = totalExerciseTime / 7;
+
+        // executeRoutineDto 리스트 생성
+        List<ResponseExerciseDto.ExecuteRoutineDto> executionRoutineDtoList = routineInfoMap.values().stream()
+                .map(info -> ResponseExerciseDto.ExecuteRoutineDto.builder()
+                        .name(info.getName())
+                        .imageUrl(info.getImageUrl())
+                        .routineTime(info.getTotalTime())
+                        .build())
+                .collect(Collectors.toList());
+
+        // ReportDto 생성
+        ResponseExerciseDto.ReportDto reportDto = ResponseExerciseDto.ReportDto.builder()
+                .totalExerciseTime(totalExerciseTime)
+                .avgExerciseTime(avgExerciseTime)
+                .startTime(startTime)
+                .endTime(endTime)
+                .monTime(exerciseWeekRecord.getMonTime())
+                .tueTime(exerciseWeekRecord.getTueTime())
+                .wenTime(exerciseWeekRecord.getWenTime())
+                .thuTime(exerciseWeekRecord.getThuTime())
+                .friTime(exerciseWeekRecord.getFriTime())
+                .satTime(exerciseWeekRecord.getSatTime())
+                .sunTime(exerciseWeekRecord.getSunTime())
+                .feedBack(exerciseWeekRecord.getAiFeedback())
+                .exerciseRoutineDtoList(executionRoutineDtoList)  // executeRoutineDto 리스트 사용
+                .build();
+        return reportDto;
     }
 
 
