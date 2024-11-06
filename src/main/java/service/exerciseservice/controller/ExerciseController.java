@@ -186,7 +186,7 @@ public class ExerciseController {
     //Todo: 회원별로 모든 루틴 리스트 조회 테스트
     @GetMapping("/grouped-by-user")
     public BaseResponse<List<ResponseExerciseDto.ExerciseRoutineGroupDto>> getRoutinesGroupedByUser() {
-        LocalDate testDate = LocalDate.parse("2024-12-09");
+        LocalDate testDate = LocalDate.parse("2024-12-16");
         LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일

@@ -22,7 +22,7 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
     @Query("select new service.exerciseservice.dto.ResponseExerciseDto$DayRoutineDto(er.exerciseRoutine.exerciseName,er.exerciseRoutine.imageUrl,er.exerciseRoutine.id, er.exerciseRoutine.monday, " +
             "er.exerciseRoutine.tuesday, er.exerciseRoutine.wednesday, er.exerciseRoutine.thursday, er.exerciseRoutine.friday,er.exerciseRoutine.saturday, er.exerciseRoutine.sunday," +
             "er.exerciseRoutine.status, er.exerciseRoutine.startTime, er.exerciseRoutine.endTime, er.exerciseRoutine.explanation,er.exerciseRoutine.basicService,er.id, er.complete)"+
-            "from ExerciseRoutineRecord er where er.routineDate =:date and er.userId =:userId")
+            "from ExerciseRoutineRecord er where er.routineDate =:date and er.userId =:userId and er.status = true")
     List<ResponseExerciseDto.DayRoutineDto> getDayRoutine(LocalDate date, Long userId);
 
     @Query("select err from ExerciseRoutineRecord err where err.userId =:userId")

@@ -50,11 +50,11 @@ public class ChatClientConfig {
             The names of exercises appear in [ ].
             Please structure your response as follows:
   
-            [Routine 1]   
+            {{Routine's name}}   
              
 
             
-            [Routine 2]                       
+            {{Routine's name}}                       
             
         """;
 
