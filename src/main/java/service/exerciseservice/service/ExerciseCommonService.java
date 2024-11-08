@@ -23,7 +23,7 @@ public interface ExerciseCommonService {
     void cancelRoutine(Long routineRecordId, Long userId);
 
     //Todo: 운동 루틴 삭제
-    void deleteRoutine(Long routineId);
+    void deleteRoutine(Long routineId, Long userId);
 
     //Todo: 운동 루틴 수정
     Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto);

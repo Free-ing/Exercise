@@ -124,7 +124,8 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.deleteRoutine(routineId);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        exerciseCommonService.deleteRoutine(routineId, userId);
         return BaseResponse.onSuccess("성공적으로 루틴을 삭제했습니다.");
     }
 

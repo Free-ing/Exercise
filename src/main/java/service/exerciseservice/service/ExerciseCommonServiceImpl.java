@@ -127,8 +127,8 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo: 운동 루틴 삭제
     @Override
-    public void deleteRoutine(Long routineId){
-        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
+    public void deleteRoutine(Long routineId, Long userId){
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
 
         exerciseRoutineRepository.delete(exerciseRoutine);
