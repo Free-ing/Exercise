@@ -75,7 +75,8 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.onExerciseRoutine(routineId,date);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        exerciseCommonService.onExerciseRoutine(routineId,date, userId);
         return BaseResponse.onSuccess("성공적으로 루틴 일정을 켰습니다.");
     }
     //Todo: 운동 루틴 끄기
@@ -86,7 +87,8 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.offExerciseRoutine(routineId,date);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        exerciseCommonService.offExerciseRoutine(routineId,date,userId);
         return BaseResponse.onSuccess("성공적으로 루틴 일정을 껐습니다.");
     }
 
@@ -97,7 +99,8 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.completeRoutine(routineId);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        exerciseCommonService.completeRoutine(routineId, userId);
         return BaseResponse.onSuccess("성공적으로 일정을 수행하였습니다.");
     }
 
@@ -109,7 +112,8 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
-        exerciseCommonService.cancelRoutine(routineId);
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+        exerciseCommonService.cancelRoutine(routineId, userId);
         return BaseResponse.onSuccess("일정 수행완료를 취소하였습니다.");
     }
 

@@ -75,4 +75,6 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    Optional<ExerciseRoutineRecord> findByIdAndUserId(Long routineRecordId, Long userId);
 }

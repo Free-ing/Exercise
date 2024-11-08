@@ -71,8 +71,8 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo : 운동 루틴 on
     @Override
-    public void onExerciseRoutine(Long routineId, LocalDate today){
-        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
+    public void onExerciseRoutine(Long routineId, LocalDate today, Long userId){
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId,userId)
                 .orElseThrow(()-> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
         exerciseRoutine.updateStatus(true);  // 이 부분 추가
 
@@ -88,11 +88,11 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo : 운동 루틴 off
     @Override
-    public void offExerciseRoutine(Long routineId, LocalDate today) {
-        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findById(routineId)
+    public void offExerciseRoutine(Long routineId, LocalDate today, Long userId) {
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId,userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
 
-        exerciseRoutine.updateStatus(false);  // 이 부분 추가
+        exerciseRoutine.updateStatus(false);
 
         // 현재 날짜 정보 가져오기
 //        LocalDate today = LocalDate.now();
@@ -105,8 +105,8 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo: 운동 일정 수행 완료
     @Override
-    public void completeRoutine(Long routineRecordId){
-        ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
+    public void completeRoutine(Long routineRecordId, Long userId){
+        ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findByIdAndUserId(routineRecordId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_RECORD_NOT_FOUND));
 
         Long duration = exerciseRoutineRecord.getExerciseRoutine().getDuration();
@@ -118,8 +118,8 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo: 운동 일정 수행 완료 취소
     @Override
-    public void cancelRoutine(Long routineRecordId){
-        ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findById(routineRecordId)
+    public void cancelRoutine(Long routineRecordId , Long userId){
+        ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findByIdAndUserId(routineRecordId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_RECORD_NOT_FOUND));
         exerciseRoutineRecord.updateCompleteAndCompleteDate(false, null,0);
 
