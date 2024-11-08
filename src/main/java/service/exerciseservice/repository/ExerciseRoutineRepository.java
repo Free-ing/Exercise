@@ -61,5 +61,7 @@ public interface ExerciseRoutineRepository extends JpaRepository<ExerciseRoutine
     @Modifying
     @Query("DELETE FROM ExerciseRoutine e WHERE e.userId = :userId")
     void deleteAllByUserId(Long userId);
- }
+
+    ExerciseRoutine findByUserIdAndExerciseName(Long userId, String routineName);
+}
 

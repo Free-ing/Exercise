@@ -49,15 +49,21 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
             LocalTime endTime;
             long durationInMinutes;
 
-            if(exerciseRoutineDto.getStartTime() != null && exerciseRoutineDto.getEndTime() !=null){
-                startTime = exerciseRoutineDto.getStartTime();
-                endTime = exerciseRoutineDto.getEndTime();
-                durationInMinutes = calculateDuration(startTime, endTime);
+            ExerciseRoutine existRoutine = exerciseRoutineRepository.findByUserIdAndExerciseName(userId, exerciseRoutineDto.getRoutineName());
+
+            if(existRoutine != null){
+                throw new RestApiException(RoutineErrorStatus.EXERCISE_ROUTINE_ALREADY_EXIST);
 
             }else {
-                durationInMinutes = 0;
-            }
+                if (exerciseRoutineDto.getStartTime() != null && exerciseRoutineDto.getEndTime() != null) {
+                    startTime = exerciseRoutineDto.getStartTime();
+                    endTime = exerciseRoutineDto.getEndTime();
+                    durationInMinutes = calculateDuration(startTime, endTime);
 
+                } else {
+                    durationInMinutes = 0;
+                }
+            }
 
         // 운동 시간 계산 (분 단위)
         return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
