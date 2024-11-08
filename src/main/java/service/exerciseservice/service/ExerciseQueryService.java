@@ -30,8 +30,8 @@ public interface ExerciseQueryService {
     //Todo: 운동 피드백 리스트(날짜 조회)
     List<ResponseExerciseDto.FeedbackDayListDto> getFeedbackDayList(int year, int month, long userId);
 
-    //Todo: 운동 피드백 리스트 조회
-    ResponseExerciseDto.ReportDto getFeedback(long feedbackId, long userId);
+    //Todo: 운동 피드백 상세 조회
+    ResponseExerciseDto.ReportDto getFeedback(LocalDate startDate, LocalDate endDate, long userId);
 
     @Transactional(readOnly = true)
     List<ResponseExerciseDto.DayCompleteRoutine> getCompleteDate(LocalDate startDate, LocalDate endDate, Long userId);

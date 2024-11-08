@@ -31,9 +31,12 @@ public class ReportAiService {
     @Scheduled(cron = "0 30 0 * * MON") // 매주 월요일 0시에 실행
     @Transactional
     public void createAiFeedBack() throws JsonProcessingException {
-        LocalDate testDate = LocalDate.parse("2024-12-09");
-        LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
+        // 지난 주의 시작일(월요일)과 종료일(일요일) 계산
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
+//        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
+
+        LocalDate todayDate = LocalDate.parse("2024-12-09");
+        LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
         System.out.println("시작");

@@ -186,9 +186,12 @@ public class ExerciseController {
     //Todo: 회원별로 모든 루틴 리스트 조회 테스트
     @GetMapping("/grouped-by-user")
     public BaseResponse<List<ResponseExerciseDto.ExerciseRoutineGroupDto>> getRoutinesGroupedByUser() {
-        LocalDate testDate = LocalDate.parse("2024-12-16");
-        LocalDate endDate = testDate.minusDays(1); // 어제(일요일)
+        // 지난 주의 시작일(월요일)과 종료일(일요일) 계산
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
+//        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
+
+        LocalDate todayDate = LocalDate.parse("2024-12-09");
+        LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
         return BaseResponse.onSuccess(exerciseQueryService.getRoutinesGroupedByUser(startDate,endDate)
         );
@@ -222,20 +225,31 @@ public class ExerciseController {
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
         return BaseResponse.onSuccess(exerciseQueryService.getFeedbackDayList(year, month,userId));
     }
+//
+//    //Todo: 운동 피드백 상세 조회
+//    @GetMapping("/report/{reportId}")
+//    public BaseResponse<ResponseExerciseDto.ReportDto> getReportList(
+//            @PathVariable Long reportId,
+//            @RequestHeader("Authorization") String authorizationHeader
+//
+//    ){
+//        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+//        return BaseResponse.onSuccess(exerciseQueryService.getFeedback(reportId, userId));
+//    }
 
     //Todo: 운동 피드백 상세 조회
-    @GetMapping("/report/{reportId}")
+    @GetMapping("/report")
     public BaseResponse<ResponseExerciseDto.ReportDto> getReportList(
-            @PathVariable Long reportId,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        return BaseResponse.onSuccess(exerciseQueryService.getFeedback(reportId, userId));
+        return BaseResponse.onSuccess(exerciseQueryService.getFeedback(startDate,endDate, userId));
     }
 
     //Todo: 하나라도 수행한 일정이 있다면 조회하는 그 날짜 반환하기
-
     @GetMapping("/home/record-week")
     public BaseResponse<?> getDate(
             @RequestParam LocalDate startDate,

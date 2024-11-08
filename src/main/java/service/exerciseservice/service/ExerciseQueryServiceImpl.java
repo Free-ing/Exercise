@@ -114,11 +114,11 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
 
     //Todo: 운동 피드백 상세 조회
     @Override
-    public ResponseExerciseDto.ReportDto getFeedback(long feedbackId, long userId) {
+    public ResponseExerciseDto.ReportDto getFeedback(LocalDate startDate, LocalDate endDate, long userId) {
 //        List<ResponseExerciseDto.ReportDto> reportDtoList = new ArrayList<>();
 //        List<ExerciseWeekRecord> exerciseWeekRecordList = exerciseWeekRecordRepository.findByYearAndMonthAndUserId(year,month,userId);
 
-        ExerciseWeekRecord exerciseWeekRecord = exerciseWeekRecordRepository.findById(feedbackId)
+        ExerciseWeekRecord exerciseWeekRecord = exerciseWeekRecordRepository.findByStartDateAndEndDateAndUserId(startDate,endDate,userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.EXERCISE_WEEK_RECORD_NOT_FOUND));
 
         LocalDate startTime = exerciseWeekRecord.getStartDate();

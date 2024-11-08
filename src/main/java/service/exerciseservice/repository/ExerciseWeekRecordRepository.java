@@ -10,6 +10,7 @@ import service.exerciseservice.entity.ExerciseWeekRecord;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ExerciseWeekRecordRepository extends JpaRepository<ExerciseWeekRecord, Long> {
 
@@ -28,4 +29,6 @@ public interface ExerciseWeekRecordRepository extends JpaRepository<ExerciseWeek
 
     @Query("select new service.exerciseservice.dto.ResponseExerciseDto$FeedbackDayListDto (ewr.exerciseWeekRecordId, ewr.startDate, ewr.endDate) from ExerciseWeekRecord ewr where ewr.userId = :userId and YEAR(ewr.endDate) = :year and MONTH(ewr.endDate) = :month ")
     List<ResponseExerciseDto.FeedbackDayListDto> findFeedbackDayList(int year, int month, long userId);
+
+    Optional<ExerciseWeekRecord> findByStartDateAndEndDateAndUserId(LocalDate startDate, LocalDate endDate, Long userId);
 }
