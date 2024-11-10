@@ -51,4 +51,8 @@ public class ExerciseRoutineRecord extends BaseEntity {
     public void updateStatus(boolean status){
         this.status = status;
     }
+
+    public void offRoutineRecord(){
+        this.status = false;
+    }
 }

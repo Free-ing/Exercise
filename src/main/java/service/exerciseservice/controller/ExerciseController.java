@@ -195,7 +195,7 @@ public class ExerciseController {
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
 //        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
-        LocalDate todayDate = LocalDate.parse("2024-12-09");
+        LocalDate todayDate = LocalDate.parse("2024-11-04");
         LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
         return BaseResponse.onSuccess(exerciseQueryService.getRoutinesGroupedByUser(startDate,endDate)
@@ -250,8 +250,13 @@ public class ExerciseController {
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
+
+        System.out.println("요청 받음!!!!!!!!!!!1");
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        return BaseResponse.onSuccess(exerciseQueryService.getFeedback(startDate,endDate, userId));
+        ResponseExerciseDto.ReportDto reportDto = exerciseQueryService.getFeedback(startDate,endDate, userId);
+        System.out.println(reportDto.toString());
+        System.out.println("요청 완료");
+        return BaseResponse.onSuccess(reportDto);
     }
 
     //Todo: 하나라도 수행한 일정이 있다면 조회하는 그 날짜 반환하기
@@ -271,5 +276,20 @@ public class ExerciseController {
         }
 
         return BaseResponse.onSuccess(existingDates);
+    }
+
+    //Todo : 쉬어가기
+    @PatchMapping("/record-off/{recordId}")
+    public BaseResponse<String> offTodayRecord(
+            @PathVariable Long recordId,
+            @RequestHeader("Authorization") String authorizationHeader
+
+    ){
+        Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
+
+        exerciseCommonService.offDayRecord(recordId, userId);
+
+        return BaseResponse.onSuccess("성공적으로 루틴 쉬어가기를 완료했습니다.");
+
     }
 }

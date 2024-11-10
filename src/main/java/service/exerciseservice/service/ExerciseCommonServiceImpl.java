@@ -228,7 +228,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
 //        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
-        LocalDate todayDate = LocalDate.parse("2024-12-09");
+        LocalDate todayDate = LocalDate.parse("2024-11-04");
         LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
@@ -243,6 +243,19 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
             }
         }
     }
+
+    //Todo: 쉬어가기
+    @Override
+    public void offDayRecord(Long recordId, Long userId){
+        ExerciseRoutineRecord exerciseRoutineRecord = exerciseRoutineRecordRepository.findByIdAndUserId(recordId, userId)
+                .orElseThrow(() -> new RestApiException(RoutineErrorStatus.EXERCISE_WEEK_RECORD_NOT_FOUND));
+
+        exerciseRoutineRecord.offRoutineRecord();
+
+    }
+
+
+
 
 
 

@@ -35,7 +35,7 @@ public class ReportAiService {
 //        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
 //        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
-        LocalDate todayDate = LocalDate.parse("2024-12-09");
+        LocalDate todayDate = LocalDate.parse("2024-11-04");
         LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 

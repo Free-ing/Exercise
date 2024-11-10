@@ -38,4 +38,7 @@ public interface ExerciseCommonService {
     @Scheduled(cron = "0 0 0 * * MON") // 매주 월요일 0시에 실행
     @Transactional
     void createWeeklyRecords();
+
+    //Todo: 쉬어가기
+    void offDayRecord(Long recordId, Long userId);
 }
