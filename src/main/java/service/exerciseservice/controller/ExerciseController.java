@@ -3,6 +3,7 @@ package service.exerciseservice.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.web.bind.annotation.*;
 import service.exerciseservice.base.BaseResponse;
 import service.exerciseservice.dto.RequestExerciseDto;
@@ -134,12 +135,13 @@ public class ExerciseController {
     public BaseResponse<Long> updateRoutine(
             @RequestBody RequestExerciseDto.RoutineUpdateDto routineUpdateDto,
             @PathVariable Long routineId,
+            @RequestParam LocalDate today,
             @RequestHeader("Authorization") String authorizationHeader
 
     ){
 
         Long userId = tokenProviderService.getUserIdFromToken(authorizationHeader);
-        Long updateRoutineId = exerciseCommonService.updateRoutine(userId, routineId, routineUpdateDto);
+        Long updateRoutineId = exerciseCommonService.updateRoutine(userId, routineId, routineUpdateDto, today);
         return BaseResponse.onSuccess(updateRoutineId);
     }
 

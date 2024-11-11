@@ -26,7 +26,7 @@ public interface ExerciseCommonService {
     void deleteRoutine(Long routineId, Long userId);
 
     //Todo: 운동 루틴 수정
-    Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto);
+    Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto, LocalDate today);
 
     //Todo: 기본 기능 생성
     void createDefaultService(Long userId);

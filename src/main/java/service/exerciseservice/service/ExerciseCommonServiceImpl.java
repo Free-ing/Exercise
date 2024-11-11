@@ -136,7 +136,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo: 운동 루틴 수정
     @Override
-    public Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto){
+    public Long updateRoutine(Long userId, Long routineId, RequestExerciseDto.RoutineUpdateDto routineUpdateDto, LocalDate today){
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.USER_CANT_UPDATE));
 
@@ -155,6 +155,10 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
         // 운동 시간 계산 (분 단위)
         exerciseRoutine.update(routineUpdateDto,durationInMinutes );
+
+        offExerciseRoutine(routineId,today,userId);
+        onExerciseRoutine(routineId,today,userId);
+
 
         return exerciseRoutine.getId();
     }
