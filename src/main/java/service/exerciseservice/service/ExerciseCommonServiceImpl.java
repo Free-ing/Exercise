@@ -22,6 +22,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +82,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
         LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
         LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
 
-        handleRoutineOn(exerciseRoutine, today, endOfWeek);
+        handleRoutineOn(exerciseRoutine, today);
 
         exerciseRoutineRepository.save(exerciseRoutine);
     }
@@ -352,17 +353,21 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
             currentDate = currentDate.plusDays(1);
         }
     }
-    private void handleRoutineOn(ExerciseRoutine routine, LocalDate today, LocalDate endOfWeek) {
+    private void handleRoutineOn(ExerciseRoutine routine, LocalDate today) {
         // 현재 날짜부터 이번 주 일요일까지의 날짜들에 대해 처리
+        // 4주 뒤의 일요일 계산
+        LocalDate endOfWeek = today.plusWeeks(4)  // 4주 추가
+                .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));  // 일요일로 조정
+
+        // 현재 날짜부터 4주 뒤 일요일까지 순회
         LocalDate currentDate = today;
-        while (!currentDate.isAfter(endOfWeek )) {
+        while (!currentDate.isAfter(endOfWeek)) {
             // 해당 요일에 대한 루틴 설정이 되어있는지 확인
             if (isDayEnabled(routine, currentDate)) {
                 // 이미 record가 있는지 확인
                 Optional<ExerciseRoutineRecord> existingRecord = exerciseRoutineRecordRepository
                         .findByExerciseRoutineAndRoutineDateAndUserId(
                                 routine, currentDate, routine.getUserId());
-
                 if (existingRecord.isPresent()) {
                     // 이미 존재하는 record의 status를 TRUE로 업데이트
                     existingRecord.get().updateStatus(true);
