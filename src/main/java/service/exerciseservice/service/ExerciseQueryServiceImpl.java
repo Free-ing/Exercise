@@ -69,14 +69,17 @@ public class ExerciseQueryServiceImpl implements ExerciseQueryService {
     public List<RoutineTrackerDto.ExerciseRoutineTrackerDto> getHobbyRoutineTrackers(Long userId, int year, int month) {
         Map<String, RoutineTrackerDto.ExerciseRoutineTrackerDto> routineMap = new LinkedHashMap<>();
         List<ExerciseRoutine> routines = exerciseRoutineRepository.findAllWithRecordsByUserId(userId, year, month);
-        System.out.println(routines);
 
         for (ExerciseRoutine routine : routines) {
             if (!routine.getExerciseRoutineRecordList().isEmpty()) {  // 레코드가 있는 경우만 처리
-                System.out.println("test");
                 RoutineTrackerDto.ExerciseRoutineTrackerDto trackerDto =
                         routineMap.computeIfAbsent(routine.getExerciseName(),
-                                k -> new RoutineTrackerDto.ExerciseRoutineTrackerDto(routine.getExerciseName()));
+                                k -> {
+                                    RoutineTrackerDto.ExerciseRoutineTrackerDto dto =
+                                            new RoutineTrackerDto.ExerciseRoutineTrackerDto(routine.getExerciseName());
+                                    dto.setImageUrl(routine.getImageUrl()); // 이미지 URL 설정
+                                    return dto;
+                                });
 
                 for (ExerciseRoutineRecord record : routine.getExerciseRoutineRecordList()) {
                     trackerDto.addRecord(new RoutineTrackerDto.ExerciseRecordDto(

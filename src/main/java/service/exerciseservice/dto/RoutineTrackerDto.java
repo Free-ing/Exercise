@@ -13,11 +13,13 @@ public class RoutineTrackerDto {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class ExerciseRoutineTrackerDto {
         private String exerciseName;
+        private String imageUrl;
         private List<ExerciseRecordDto> records = new ArrayList<>();
 
         public ExerciseRoutineTrackerDto(String hobbyName) {
         this.exerciseName = hobbyName;
         }
+        public void  setImageUrl(String imageUrl){this.imageUrl = imageUrl;}
         public void addRecord(ExerciseRecordDto record) {
             this.records.add(record);
         }
