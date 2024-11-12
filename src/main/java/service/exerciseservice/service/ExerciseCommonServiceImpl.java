@@ -72,17 +72,33 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
     //Todo : 운동 루틴 on
     @Override
-    public void onExerciseRoutine(Long routineId, LocalDate today, Long userId){
-        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId,userId)
-                .orElseThrow(()-> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
-        exerciseRoutine.updateStatus(true);  // 이 부분 추가
+    public void onExerciseRoutine(Long routineId, LocalDate today, Long userId) {
+        ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
+                .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
 
-        // 현재 날짜 정보 가져오기
-//        LocalDate today = LocalDate.now();
-        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
-        LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
+        exerciseRoutine.updateStatus(true);
 
-        handleRoutineOn(exerciseRoutine, today);
+        // today 날짜에 해당하는 루틴 레코드가 있는지 확인
+        List<ExerciseRoutineRecord> existingRecords = exerciseRoutineRecordRepository
+                .findByExerciseRoutineAndRoutineDateGreaterThanEqual(exerciseRoutine, today);
+
+        if (existingRecords.isEmpty()) {
+            // 레코드가 없는 경우: 4주 후까지 새로 생성
+            LocalDate endOfWeek = today.plusWeeks(4)
+                    .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+            handleRoutineOn(exerciseRoutine, today, endOfWeek);
+        } else {
+            // 레코드가 있는 경우: 활성화된 요일의 레코드만 status를 true로 업데이트
+            existingRecords.forEach(record -> {
+                if (isDayEnabled(exerciseRoutine, record.getRoutineDate())) {
+                    record.updateStatus(true);
+                    exerciseRoutineRecordRepository.save(record);
+                } else {
+                    record.updateStatus(false);
+                    exerciseRoutineRecordRepository.save(record);
+                }
+            });
+        }
 
         exerciseRoutineRepository.save(exerciseRoutine);
     }
@@ -260,8 +276,55 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     }
 
 
+    //Todo: 활성화된 루틴 매주 일정이 자동으로 생기도록 설정
+    @Scheduled(cron = "0 52 14 ? * TUE")  // 매주 화요일 14:03에 실행
+    public void autoCreateRoutineRecord() {
+        try {
+            List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findActiveRoutines();
+            System.out.println("스케줄러 실행: 활성화된 루틴 수 = " + exerciseRoutineList.size());
 
+            for (ExerciseRoutine exerciseRoutine : exerciseRoutineList) {
+                try {
+                    System.out.println("처리 중인 루틴: " + exerciseRoutine.getExerciseName());
 
+                    // 해당 루틴의 가장 최근 routineRecord 찾기
+                    Optional<ExerciseRoutineRecord> latestRecord = exerciseRoutineRecordRepository
+                            .findTopByExerciseRoutineAndStatusOrderByRoutineDateDesc(exerciseRoutine, true);
+
+                    if (latestRecord.isEmpty()) {
+                        System.out.println("최근 기록 없음 - 현재 날짜부터 시작");
+                        LocalDate startDate = LocalDate.now();
+                        LocalDate endDate = startDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+                        handleRoutineOn(exerciseRoutine, startDate, endDate);
+                        continue;
+                    }
+
+                    LocalDate startDate = latestRecord.get().getRoutineDate().plusDays(1);
+                    LocalDate endDate = startDate.with(TemporalAdjusters.next(DayOfWeek.SUNDAY));
+
+                    System.out.println("루틴 레코드 생성 - 시작일: " + startDate + ", 종료일: " + endDate);
+
+                    // 날짜 유효성 검사
+                    if (startDate.isAfter(endDate)) {
+                        System.out.println("시작일이 종료일보다 늦음 - 스킵");
+                        continue;
+                    }
+
+                    handleRoutineOn(exerciseRoutine, startDate, endDate);
+                    System.out.println("루틴 레코드 생성 완료: " + exerciseRoutine.getExerciseName());
+
+                } catch (Exception e) {
+                    System.err.println("루틴 처리 중 오류 발생: " + exerciseRoutine.getExerciseName());
+                    e.printStackTrace();
+                    // 한 루틴의 실패가 다른 루틴 처리를 중단시키지 않도록 continue
+                    continue;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("자동 루틴 생성 중 오류 발생");
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -356,14 +419,11 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
             currentDate = currentDate.plusDays(1);
         }
     }
-    private void handleRoutineOn(ExerciseRoutine routine, LocalDate today) {
+    private void handleRoutineOn(ExerciseRoutine routine, LocalDate today, LocalDate endOfWeek) {
         // 현재 날짜부터 이번 주 일요일까지의 날짜들에 대해 처리
         // 4주 뒤의 일요일 계산
-        LocalDate endOfWeek = today.plusWeeks(4)  // 4주 추가
-                .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));  // 일요일로 조정
-
-        // 현재 날짜부터 4주 뒤 일요일까지 순회
         LocalDate currentDate = today;
+
         while (!currentDate.isAfter(endOfWeek)) {
             // 해당 요일에 대한 루틴 설정이 되어있는지 확인
             if (isDayEnabled(routine, currentDate)) {

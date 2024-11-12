@@ -77,4 +77,14 @@ public interface ExerciseRoutineRecordRepository extends JpaRepository<ExerciseR
     );
 
     Optional<ExerciseRoutineRecord> findByIdAndUserId(Long routineRecordId, Long userId);
+
+    Optional<ExerciseRoutineRecord> findTopByExerciseRoutineAndStatusOrderByRoutineDateDesc(
+            ExerciseRoutine exerciseRoutine,
+            Boolean status
+    );
+
+    List<ExerciseRoutineRecord> findByExerciseRoutineAndRoutineDateGreaterThanEqual(
+            ExerciseRoutine exerciseRoutine,
+            LocalDate routineDate
+    );
 }
