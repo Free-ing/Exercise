@@ -99,7 +99,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 //        LocalDate today = LocalDate.now();
         LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
 
-        handleRoutineOff(exerciseRoutine, today, endOfWeek);
+        handleRoutineOff(exerciseRoutine, today);
 
         exerciseRoutineRepository.save(exerciseRoutine);
     }
@@ -335,8 +335,11 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
 
 
-    private void handleRoutineOff(ExerciseRoutine routine, LocalDate today, LocalDate endOfWeek) {
+    private void handleRoutineOff(ExerciseRoutine routine, LocalDate today) {
         LocalDate currentDate = today;
+        LocalDate endOfWeek = today.plusWeeks(4)  // 4주 추가
+                .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));  // 일요일로 조정
+
         while (!currentDate.isAfter(endOfWeek)) {
             // routineDate로 레코드를 찾아야 함
             Optional<ExerciseRoutineRecord> existingRecord = exerciseRoutineRecordRepository
