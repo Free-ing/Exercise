@@ -258,13 +258,13 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     @Transactional
     @Override
     public void createWeeklyRecords() {
-        // 지난 주의 시작일(월요일)과 종료일(일요일) 계산
-//        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
-//        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
-
-        LocalDate todayDate = LocalDate.parse("2024-11-04");
-        LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
+//         지난 주의 시작일(월요일)과 종료일(일요일) 계산
+        LocalDate endDate = LocalDate.now().minusDays(1); // 어제(일요일)
         LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
+
+//        LocalDate todayDate = LocalDate.parse("2024-11-04");
+//        LocalDate endDate = todayDate.minusDays(1); // 어제(일요일)
+//        LocalDate startDate = endDate.minusDays(6); // 지난주 월요일
 
         // 완료된 운동이 있는 사용자 목록 조회
         List<Long> userIds = exerciseRoutineRecordRepository.findDistinctUserIdsByCompleteTrue();
