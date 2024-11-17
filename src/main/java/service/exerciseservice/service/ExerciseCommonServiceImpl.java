@@ -50,11 +50,15 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
             LocalTime endTime;
             long durationInMinutes;
 
+
+            // 이미 루틴이 존재하는 지 검증
             ExerciseRoutine existRoutine = exerciseRoutineRepository.findByUserIdAndExerciseName(userId, exerciseRoutineDto.getRoutineName());
 
+            // 루틴이 존재한다면
             if(existRoutine != null){
                 throw new RestApiException(RoutineErrorStatus.EXERCISE_ROUTINE_ALREADY_EXIST);
 
+                //존재하지 않는다면
             }else {
                 if (exerciseRoutineDto.getStartTime() != null && exerciseRoutineDto.getEndTime() != null) {
                     startTime = exerciseRoutineDto.getStartTime();
@@ -64,10 +68,15 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                 } else {
                     durationInMinutes = 0;
                 }
+
+                validateWeekdaySelection(exerciseRoutineDto);
+                Long exerciseId = exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
+                onExerciseRoutine(exerciseId, LocalDate.now(), userId);
+                return exerciseId;
             }
 
+
         // 운동 시간 계산 (분 단위)
-        return exerciseRoutineRepository.save(toRoutineEntity(exerciseRoutineDto,durationInMinutes,userId)).getId();
     }
 
     //Todo : 운동 루틴 on
@@ -75,19 +84,22 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
     public void onExerciseRoutine(Long routineId, LocalDate today, Long userId) {
         ExerciseRoutine exerciseRoutine = exerciseRoutineRepository.findByIdAndUserId(routineId, userId)
                 .orElseThrow(() -> new RestApiException(RoutineErrorStatus.ROUTINE_NOT_FOUND));
-
+        System.out.println("루틴 켜기 실행");
         exerciseRoutine.updateStatus(true);
 
         // today 날짜에 해당하는 루틴 레코드가 있는지 확인
         List<ExerciseRoutineRecord> existingRecords = exerciseRoutineRecordRepository
                 .findByExerciseRoutineAndRoutineDateGreaterThanEqual(exerciseRoutine, today);
+        System.out.println("루틴 조회 시작");
 
         if (existingRecords.isEmpty()) {
             // 레코드가 없는 경우: 4주 후까지 새로 생성
+            System.out.println("루틴 생성시작");
             LocalDate endOfWeek = today.plusWeeks(4)
                     .with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
             handleRoutineOn(exerciseRoutine, today, endOfWeek);
         } else {
+            System.out.println("루틴 true로 변경");
             // 레코드가 있는 경우: 활성화된 요일의 레코드만 status를 true로 업데이트
             existingRecords.forEach(record -> {
                 if (isDayEnabled(exerciseRoutine, record.getRoutineDate())) {
@@ -102,6 +114,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
         exerciseRoutineRepository.save(exerciseRoutine);
     }
+
 
     //Todo : 운동 루틴 off
     @Override
@@ -277,7 +290,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
 
 
     //Todo: 활성화된 루틴 매주 일정이 자동으로 생기도록 설정
-    @Scheduled(cron = "0 52 14 ? * TUE")  // 매주 화요일 14:03에 실행
+    @Scheduled(cron = "0 15 00 ? * MON")  // 매주 화요일 14:03에 실행
     public void autoCreateRoutineRecord() {
         try {
             List<ExerciseRoutine> exerciseRoutineList = exerciseRoutineRepository.findActiveRoutines();
@@ -383,6 +396,7 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                         record -> record.getRoutineDate().getDayOfWeek(),
                         Collectors.summingInt(record -> (int) record.getExerciseDurationTime())
                 ));
+
     }
 
 
@@ -432,9 +446,11 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                         .findByExerciseRoutineAndRoutineDateAndUserId(
                                 routine, currentDate, routine.getUserId());
                 if (existingRecord.isPresent()) {
+                    System.out.println("루틴 이미 존재");
                     // 이미 존재하는 record의 status를 TRUE로 업데이트
                     existingRecord.get().updateStatus(true);
                 } else {
+                    System.out.println("루틴 일정 생성");
                     // 새로운 record 생성
                     ExerciseRoutineRecord newRecord = ExerciseRoutineRecord.builder()
                             .userId(routine.getUserId())
@@ -491,5 +507,20 @@ public class ExerciseCommonServiceImpl implements ExerciseCommonService {
                 .basicService(basicService)
                 .status(false)
                 .build();
+    }
+
+
+    private void validateWeekdaySelection(RequestExerciseDto.ExerciseRoutineDto exerciseRoutineDto) {
+        boolean hasSelectedDay = exerciseRoutineDto.getMonday() ||
+                exerciseRoutineDto.getTuesday() ||
+                exerciseRoutineDto.getWednesday() ||
+                exerciseRoutineDto.getThursday() ||
+                exerciseRoutineDto.getFriday() ||
+                exerciseRoutineDto.getSaturday() ||
+                exerciseRoutineDto.getSunday();
+
+        if (!hasSelectedDay) {
+            throw new RestApiException(RoutineErrorStatus.MUST_EXIST_ONE_TRUE);
+        }
     }
 }
