@@ -28,7 +28,7 @@ public class ExerciseWeekRecord {
     private long satTime;
     private long sunTime;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "text")
     private String aiFeedback;
 
     @Builder

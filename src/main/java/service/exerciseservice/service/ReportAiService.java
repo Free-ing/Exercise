@@ -49,17 +49,34 @@ public class ReportAiService {
             String userMessageContent = String.format("Analyze the user's workout history and provide personalized recommendations and guidelines.: %s", recordJson);
 
 
+            // ai 한테 요청 보낼 메시지
             String jsonResponse = reportChatClient.prompt()
                     .user(userMessageContent)
                     .call()
                     .content();
 
-            String translatedContent = translationService.translateToKorean(jsonResponse);
 
-            exerciseWeekRecord.setAiFeedback(translatedContent);
-            System.out.println(translatedContent);
+            //번역 단계
+            String translatedFeedback = translationService.translateToKorean(jsonResponse);
+            translatedFeedback = translatedFeedback.replace("*", "").replace("#", "");
+
+
+            //어색하지 않게 ai가  한국어 수정
+            String returnFeedback =  refineKoreanFeedback(translatedFeedback);
+
+            exerciseWeekRecord.setAiFeedback(returnFeedback);
+            System.out.println(returnFeedback);
         }
     }
+
+
+    private String refineKoreanFeedback(String translatedFeedback) {
+        String refinementPrompt = String.format(
+                "Please review the following Korean feedback carefully and adjust it to make the language sound natural, warm, and friendly, as if speaking to a friend. Please avoid using symbols like '*' and '#'. For emphasis, feel free to use emojis or adjust the tone instead. Korean feedback: \"%s\"", translatedFeedback);
+
+        return reportChatClient.prompt(refinementPrompt).call().content();
+    }
+
 }
 
 

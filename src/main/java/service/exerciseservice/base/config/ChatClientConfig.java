@@ -58,6 +58,28 @@ public class ChatClientConfig {
             
         """;
 
+    private static final String REPORT_SYSTEM_PROMPT = """
+            "You are 'Huringi,' a friendly AI designed to help users improve their sleep quality. Provide warm, supportive, and insightful feedback based on the following sleep data. Do not use symbols such as '*'.For emphasis, feel free to use emojis or adjust the tone instead.\n\n"
+            +"Data Summary:\n"
+            +"- Total Exercise Time: \\n"
+            +"- Average Exercise Time: \\n"
+            +"- Routine times performed by exercise: \\n\\n"
+            +"- Daily Exercise Time: \\n\\n"
+            +"- Please highlight the positive aspects of your exercise habits, offer specific improvements, and make encouraging closing remarks."
+            +"- If there is anything you want to be better about the given information, please give me a strict feedback on this as well"
+            +Please structure your response as follows:
+  
+            {1. {Routine's name}}   
+               
+            {2. {Routine's name}}     
+            ~~
+            ~~
+            
+            {3. 권고사항}
+                             
+            
+""";
+
     @Bean
     public ChatClient recommendationChatClient(ChatClient.Builder builder) {
         return builder
@@ -68,7 +90,7 @@ public class ChatClientConfig {
     @Bean
     public ChatClient reportChatClient(ChatClient.Builder builder) {
         return builder
-                .defaultSystem(DIET_SYSTEM_PROMPT)
+                .defaultSystem(REPORT_SYSTEM_PROMPT)
                 .build();
     }
 }
